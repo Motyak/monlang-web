@@ -1,0 +1,59 @@
+- html
+  -> https://developer.mozilla.org/en-US/docs/Web/HTML
+- css
+  -> https://developer.mozilla.org/en-US/docs/Web/CSS
+- svg
+  -> https://developer.mozilla.org/en-US/docs/Web/SVG
+  -> https://upload.wikimedia.org/wikipedia/commons/1/1a/Clock_angle_problem_graph.svg
+- webassembly
+  -> https://developer.mozilla.org/en-US/docs/WebAssembly
+- web sockets (wss:// to tcp:// relay on the backend)
+  -> https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
+- accessibility
+  -> https://developer.mozilla.org/en-US/docs/Web/Accessibility
+
+pouvoir accéder au site offline, mettre en cache des pages
+  -> https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps
+
+https://whatwebcando.today/
+
+
+
+https://eecs390.github.io/notes/index.html
+  -> https://pypi.org/project/sphinx-rtd-theme/
+  -> https://sphinx-rtd-theme.readthedocs.io/en/stable/
+
+https://doc.rust-lang.org/book/title-page.html
+
+https://kotlinlang.org/docs/basic-syntax.html
+
+https://wiki.c2.com/?WishfulThinking
+
+
+code font
+  -> https://www.jetbrains.com/lp/mono/
+
+
+
+https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Document_and_website_structure
+
+
+=======================================================
+
+- Une page web par book (un book correspond à un ensemble de "sections" ordered d'une certaine manière)
+  -> on peut réutiliser une même section dans plusieurs pages
+  -> un fragment par section
+
+
+- Un book est un ensemble ordonné de sections
+- Une section associe un titre à un contenu
+  -> un contenu est une "sous-page"
+
+=======================================================
+
+- Ecrire le script python qui, à partir d'un dossier content/ contenant des .txt, génère le site dans public/
+
+- Ecrire un makefile
+
+- README.md avec commandes bash pour build et liens vers les différentes pages
+

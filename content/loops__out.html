@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="ascii">
+<!-- <meta name="viewport" content="width=device-width"> -->
+<title>monlang - Loops</title>
+</head>
+<body>
+<main>
+<h1>Loops</h1>
+
+
+
+<pre>
+<code>foreach 0..<10</code>
+  -> <code>for (int i = 0; i < 10; ++i)</code>
+
+<code>foreach 1..=10</code>
+  -> <code>for (int i = 1; i <= 10; ++i)</code>
+
+<code>foreach 9..=0</code>
+  -> <code>for (int i = 9; i >= 0; --i)</code>
+
+<code>foreach map(5..>0, (i):{2 * i})</code>
+  -> <code>for (int i = 10; i > 0; i -=2)</code>
+
+<hr>
+
+<code>while [ !(is-completed(job)) ]</code>
+<=>
+<code>until [ is-completed(job) ]</code>
+
+<code>
+do {
+
+}
+while [ !(is-completed(job)) ]
+</code>
+</pre>
+
+</main>
+</body>
+</html>
