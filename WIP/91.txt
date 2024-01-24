@@ -1,0 +1,31 @@
+let sum-of-digits (n):{
+    [ str =~ /^\d+$/ ] || "not a digit"
+    var res 0
+    foreach str(n) {
+        res += uint($1)
+    }
+    res
+}
+
+let proc1 (n):{
+    {
+        [ n % 10 != 0 ]
+        [ sum-of-digits < 10 ]
+        return n
+    }
+    91 - n
+}
+
+let proc2 (n):{n * 999'999 |> int-div(91)}
+
+let seq 1..=45 |> map(proc1) |> map(proc2)
+
+foreach [13, 27, 39, 40, 46] {
+    seq[$1 - 1] |> println("$1 -> {}", _) /*
+    13 -> 142857
+    27 -> 296703
+    39 -> 571428
+    40 -> 560439
+    46 ->
+    */
+}

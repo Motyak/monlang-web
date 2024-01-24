@@ -1,0 +1,73 @@
+
+# pass by value style
+
+```monlang
+let reduce(reducer, items, initial-value) {
+    var accumulator initial-value
+    foreach items {
+        accumulator = reducer(accumulator, $1)
+    }
+    accumulator
+}
+
+let pipe(stages...):{
+    let compose-functions (f, g):{
+        (x):{g(f(x))}
+    }
+    reduce(compose-functions, (x):{x}, stages)
+}
+
+let add (a, b):{a + b}
+{
+    let res reduce(add, 0, [1, 2, 3])
+    println(res) // 6
+}
+{
+    let res reduce(add, "T", "ommy")
+    println(res) // Tommy
+}
+
+let inc-then-double pipe((x):{x + 1}, (x):{x * 2})
+{
+    let res inc-then-double(10)
+    println(res) // 22
+}
+```
+
+# pass by reference style
+
+```monlang
+let OUT ; // document out parameters in a function signature
+
+let reduce(OUT accumulator, reducer, items) {
+    foreach items {
+        reducer(&accumulator, $1)
+    }
+    accumulator
+}
+
+let pipe(stages...):{
+    let compose(f, g):{
+        (x):{g(f(x))}
+    }
+    &(x):{x} |> reduce(compose, stages)
+}
+
+let add (a, b):{a + b}
+{
+    var res 0
+    &res |> reduce(add, [1, 2, 3])
+    println(res) // 6
+}
+{
+    var res "T"
+    &res |> reduce(add, "ommy")
+    println(res) // Tommy
+}
+
+let inc-then-double pipe((x):{x + 1}, (x):{x * 2})
+{
+    let res inc-then-double(10)
+    println(res) // 22
+}
+```

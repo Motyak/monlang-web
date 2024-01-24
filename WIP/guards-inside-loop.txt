@@ -1,0 +1,75 @@
+
+```monlang
+var println (str):{
+    stdout("${str}\n")
+    ;
+}
+
+var fn ():{
+    let fatal-error false
+    let should-break false
+    foreach 1..=10 {
+        [ !fatal-error ] || "only reached when fatal-error is `true` (assertion)"
+        [ !should-break ] || break
+        [ $1 % 2 == 0 ]
+        println("$1 is pair")
+        [ $1 == 8 ]
+        return "we reached terminal value `8`"
+    }
+    return "only reached when should-break is true (jumped from break)"
+}
+
+fn() /*
+2 is pair
+4 is pair
+6 is pair
+8 is pair
+we reached terminal value `8`
+*/
+```
+
+<=>
+
+```c++
+#include <iostream>
+
+auto fatal_error(false), should_break(false);
+
+std::string fn() {
+    for (int i = 1; i <= 10; ++i) {
+        if (fatal_error) {
+            throw std::runtime_error("only reached when fatal_error is `true` (assertion)");
+        }
+        
+        if (should_break) {
+            break;
+        }
+
+        if (i % 2 != 0) {
+            continue;
+        }
+
+        std::cout << i << " is pair" << std::endl;
+
+        if (i != 8) {
+            continue;
+        }
+        
+        return "we reached terminal value `8`";
+    }
+    return "only reached when should_break is true (jumped from break)";
+}
+
+int main()
+{
+    auto res = fn(); /*
+    2 is pair
+    4 is pair
+    6 is pair
+    8 is pair
+    */
+
+    std::cout << res << std::endl; // we reached terminal value `8`
+}
+```
+

@@ -1,0 +1,15 @@
+```monlang
+var fib (i):{
+    [ i =~ /^\d+$/ ] || "not a number"
+    [ int(i) >= 0 ] || "not a *positive* number"
+    uint(&i)
+
+    if [ i == 0 ] {
+        return 0
+    }
+    if [ i == 1 ] {
+        return 1
+    }
+    fib(i - 1) + fib(i - 2)
+}
+```
