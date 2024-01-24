@@ -1,0 +1,40 @@
+namespace Bank
+
+var deposit (OUT account, quantity):{
+    account.balance += quantity
+    ;
+}
+
+var balance (account):{
+    account.balance
+}
+
+var transfer-balance (OUT account-in, OUT account-out):{
+    var new-account-in account-in
+    var new-account-out account-out
+
+    new-account-out.balance += account-in.balance
+    new-account-in.balance = 0.00
+
+    account-in = new-account-in
+    account-out = new-account-out
+    ;
+}
+
+namespace global // end of Bank
+
+let initial-balance 100.00
+var my-account Account::with(initial-balance)
+let my-balance balance(my-account)
+print(my-balance) // 100.00
+
+&my-account |> deposit(50.00)
+print(my-balance) // 150.00
+
+&my-account |> deposit(-200.00)
+print(my-balance) // 0.00
+
+&my-account |> transferBalance(Account::with(999.99), _)
+print(my-balance) // 999.99
+
+
