@@ -1,5 +1,5 @@
 let sum-of-digits (n):{
-    [ str =~ /^\d+$/ ] || "not a digit"
+    [ str(n) =~ /^\d+$/ ] || "not a digit"
     var res 0
     foreach str(n) {
         res += uint($1)
