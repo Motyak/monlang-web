@@ -1,0 +1,51 @@
+---------------------
+low-level types
+---------------------
+
+"byte_t": pris pour acquis
+
+object_t: 1 machine word + 2 bytes
+  -> 32|64 bits            + 2 bits           + 12 bits           + 2 bits
+     (address                 (size              (manifest type     (reserved
+      in memory)               in bytes)          identifier)        flags)
+
+objects_t: 1 object_t* + 1 machine word (nb of objects)
+
+identifier_t: char* + 1 machine word (identifier length)
+
+---------------------
+primitive types
+---------------------
+
+Byte
+  -> can be casted as List<Bit> with list(_)
+
+Int
+
+Uint
+  -> can be casted as List<Digit> with list(_)
+
+Str
+  -> can be casted as List<Char> directly
+
+Bool
+
+
+Pair<U, T> <=> `(U, T)`
+
+Optional<T> <=> `T?` (with a trailing question mark)
+
+
+List<T> (heterogeneous array)
+
+Map<K, V> (heterogeneous map)
+  -> can be casted as List<Pair<K, V>>
+
+---------------------
+user-defined types
+---------------------
+
+struct => Map<K, V> that associates an identifier_t to an object_t
+  -> with runtime checks explicitly coded by user
+
+
