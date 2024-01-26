@@ -1,0 +1,32 @@
+
+code (initially represented as ascii text stream)
+  -> representation as AST
+    -> codification as text
+
+
+- Specification
+  -> theoric code samples/examples
+  -> explaination
+  -> design philosophy
+  -> comparison with early C/C++ (1991)
+
+- Representation
+  -> Low-level (in compiler/interpreter language: C++)
+    -> "byte_t", object_t, objects_t, identifier_t, ...
+  -> Grammar entities as structs (in compiler/interpreter language: C++)
+    -> Atom, ParenthesesGroup, Association, ...
+  -> AST comprising grammar entities, with nesting (in compiler/interpreter language: C++)
+  -> each monlang primitive or user-defined types
+    -> repr(obj)
+
+- Codification
+  -> AST as montree
+  -> each monlang primitive or user-defined types
+    -> codify(repr_)
+    -> codify(repr(obj)) <=> obj |> repr() |> codify()
+
+- Validation (tests)
+  -> proper parsing from monlang text to AST
+    -> strict comparison between generated codified AST and expected codified AST
+
+
