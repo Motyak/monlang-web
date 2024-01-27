@@ -51,29 +51,27 @@ struct object_t {
     /* fields */
     uint8_t type;
     union _Value {
-        uint8_t                            asByte;
-        bool                               asBool;
-        char      /* 0-127 ASCII */        asChar;
-        int64_t                            asInt;
-        double                             asFloat;
-        std::vector<object_t*>*            asList;
-        std::map<identifier_t, object_t*>* asStruct;
+        uint8_t                                         asByte;
+        bool                                            asBool;
+        char      /* 0-127 ASCII */                     asChar;
+        int64_t                                         asInt;
+        double                                          asFloat;
+        std::vector<object_t*>*                         asList;
+        std::map<identifier_t, object_t*>*              asStruct;
         std::map<HashablePtr<object_t*>, object_t*>*    asMap;
     } __attribute__ ((packed)) value; // packed attribute reduces struct size from 16 to 9 bytes
     
     /* constructors */
-    explicit object_t(_Byte   type,                            uint8_t value) : type(type._), value(_Value{.asByte  =value}) {}
-    explicit object_t(_Bool   type,                               bool value) : type(type._), value(_Value{.asBool  =value}) {}
-    explicit object_t(_Char   type,                               char value) : type(type._), value(_Value{.asChar  =value}) {}
-    explicit object_t(_Int    type,                            int64_t value) : type(type._), value(_Value{.asInt   =value}) {}
-    explicit object_t(_Float  type,                             double value) : type(type._), value(_Value{.asFloat =value}) {}
-    explicit object_t(_List   type,            std::vector<object_t*>* value) : type(type._), value(_Value{.asList  =value}) {}
-    explicit object_t(_Struct type, std::map<identifier_t, object_t*>* value) : type(type._), value(_Value{.asStruct=value}) {}
-    explicit object_t(_Map    type,    std::map<HashablePtr<object_t*>, object_t*>* value) : type(type._), value(_Value{.asMap   =value}) {}
+    explicit object_t(_Byte   type,                                      uint8_t value) : type(type._), value(_Value{.asByte  =value}) {}
+    explicit object_t(_Bool   type,                                         bool value) : type(type._), value(_Value{.asBool  =value}) {}
+    explicit object_t(_Char   type,                                         char value) : type(type._), value(_Value{.asChar  =value}) {}
+    explicit object_t(_Int    type,                                      int64_t value) : type(type._), value(_Value{.asInt   =value}) {}
+    explicit object_t(_Float  type,                                       double value) : type(type._), value(_Value{.asFloat =value}) {}
+    explicit object_t(_List   type,                      std::vector<object_t*>* value) : type(type._), value(_Value{.asList  =value}) {}
+    explicit object_t(_Struct type,           std::map<identifier_t, object_t*>* value) : type(type._), value(_Value{.asStruct=value}) {}
+    explicit object_t(_Map    type, std::map<HashablePtr<object_t*>, object_t*>* value) : type(type._), value(_Value{.asMap   =value}) {}
 
-    
-
-    private:
+  private:
     int compareWithSameType(const object_t& other) const {
         auto compare = [](auto lhs, auto rhs){
             if (lhs < rhs) return -1;
@@ -112,8 +110,8 @@ struct object_t {
         }
     }
 
-    /* make it hashable */
-    public:
+  /* make it hashable */
+  public:
     bool operator<(const object_t& other) const {
         if (this->type != other.type) {
             return this->type < other.type;

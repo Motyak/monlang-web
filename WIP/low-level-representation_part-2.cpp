@@ -23,10 +23,10 @@ void print<std::map<identifier_t, object_t*>*>(std::map<identifier_t, object_t*>
 }
 
 template<>
-void print<std::map<object_t*, object_t*>*>(std::map<object_t*, object_t*>* val) {
+void print<std::map<HashablePtr<object_t*>, object_t*>*>(std::map<HashablePtr<object_t*>, object_t*>* val) {
     std::cout << "[";
     for (auto [k, v]: *val) {
-        dispatchOnType(*k, [](auto n){print(n);});
+        dispatchOnType(*k.ptr, [](auto n){print(n);});
         std::cout << ":";
         dispatchOnType(*v, [](auto n){print(n);});
         std::cout << ", ";
@@ -94,10 +94,10 @@ int main()
     }
 
     {
-        auto key1 = object_t(Int, int64_t(1));
-        auto value1 = object_t(Char, char('f'));
-        auto key2 = object_t(Char, char('d'));
-        auto value2 = object_t(Int, int64_t(2));
+        auto key1 = object_t(Char, char('d'));
+        auto value1 = object_t(Int, int64_t(2));
+        auto key2 = object_t(Int, int64_t(1));
+        auto value2 = object_t(Char, char('f'));
         auto key3 = object_t(Float, double(3.14));
         auto value3 = object_t(Bool, bool(false));
         std::map<HashablePtr<object_t*>, object_t*> map = {
