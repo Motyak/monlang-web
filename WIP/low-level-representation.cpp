@@ -6,7 +6,7 @@
 
 using identifier_t = std::string;
 
-/* disguise types for uint8_t */
+/* disguise types for uint8_t constants */
 struct _Byte   { uint8_t _; _Byte():   _(1){} };
 struct _Bool   { uint8_t _; _Bool():   _(2){} };
 struct _Char   { uint8_t _; _Char():   _(3){} };
@@ -106,23 +106,24 @@ void dispatchOnType(object_t obj, Lambda process) {
 }
 
 template <typename T>
-void println(T val) {
-    std::cout << val << std::endl;
+void print(T val) {
+    std::cout << val;
 }
 
 template<>
-void println<uint8_t>(uint8_t val) {
+void print<uint8_t>(uint8_t val) {
     std::cout << "0b";
     for (int i = 7; i >= 0; --i) {
         std::cout << ((val & 1 << i) == 0? 0 : 1);
     }
-    std::cout << std::endl;
 }
 
 template<>
-void println<bool>(bool val) {
-    std::cout << (val? "true" : "false") << std::endl;
+void print<bool>(bool val) {
+    std::cout << (val? "true" : "false");
 }
+
+#ifdef MAIN1_CPP
 
 int main()
 {
@@ -170,3 +171,5 @@ int main()
         dispatchOnType(obj, [](auto n){println(n);}); //~ 0x7fff7933c070
     }
 }
+
+#endif // MAIN1_CPP
