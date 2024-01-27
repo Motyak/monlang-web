@@ -6,14 +6,25 @@
 
 using identifier_t = std::string;
 
-uint8_t Byte = 1;
-uint8_t Bool = 2;
-uint8_t Char = 3;
-uint8_t Int = 4;
-uint8_t Float = 5;
-uint8_t List = 6;
-uint8_t Struct = 7;
-uint8_t Map = 8; 
+/* disguise types for uint8_t */
+struct _Byte { uint8_t _; _Byte(): _(1){} };
+struct _Bool { uint8_t _; _Bool(): _(2){} };
+struct _Char { uint8_t _; _Char(): _(3){} };
+struct _Int { uint8_t _; _Int(): _(4){} };
+struct _Float { uint8_t _; _Float(): _(5){} };
+struct _List { uint8_t _; _List(): _(6){} };
+struct _Struct { uint8_t _; _Struct(): _(7){} };
+struct _Map { uint8_t _; _Map(): _(8){} };
+
+/* type enumerates */
+_Byte Byte;
+_Bool Bool;
+_Char Char;
+_Int Int;
+_Float Float;
+_List List;
+_Struct Struct;
+_Map Map;
 
 struct object_t {
     enum types {
@@ -29,7 +40,7 @@ struct object_t {
     
     /* fields */
     uint8_t type;
-    union _Value{
+    union _Value {
         uint8_t asByte;
         bool asBool;
         char asChar; // contract: make sure its 0-127 ASCII character exclusively
@@ -41,14 +52,14 @@ struct object_t {
     } value;
     
     /* constructors */
-    explicit object_t(uint8_t type, uint8_t value) : type(type), value(_Value{.asByte=value}){}
-    explicit object_t(uint8_t type, bool value) : type(type), value(_Value{.asBool=value}){}
-    explicit object_t(uint8_t type, char value) : type(type), value(_Value{.asChar=value}){}
-    explicit object_t(uint8_t type, int64_t value) : type(type), value(_Value{.asInt=value}){}
-    explicit object_t(uint8_t type, double value) : type(type), value(_Value{.asFloat=value}){}
-    explicit object_t(uint8_t type, std::vector<object_t*>* value) : type(type), value(_Value{.asList=value}){}
-    explicit object_t(uint8_t type, std::map<identifier_t, object_t*>* value) : type(type), value(_Value{.asStruct=value}){}
-    explicit object_t(uint8_t type, std::map<object_t*, object_t*>* value) : type(type), value(_Value{.asMap=value}){}
+    explicit object_t(_Byte type, uint8_t value) : type(type._), value(_Value{.asByte=value}){}
+    explicit object_t(_Bool type, bool value) : type(type._), value(_Value{.asBool=value}){}
+    explicit object_t(_Char type, char value) : type(type._), value(_Value{.asChar=value}){}
+    explicit object_t(_Int type, int64_t value) : type(type._), value(_Value{.asInt=value}){}
+    explicit object_t(_Float type, double value) : type(type._), value(_Value{.asFloat=value}){}
+    explicit object_t(_List type, std::vector<object_t*>* value) : type(type._), value(_Value{.asList=value}){}
+    explicit object_t(_Struct type, std::map<identifier_t, object_t*>* value) : type(type._), value(_Value{.asStruct=value}){}
+    explicit object_t(_Map type, std::map<object_t*, object_t*>* value) : type(type._), value(_Value{.asMap=value}){}
 };
 
 template <typename Lambda>
@@ -89,12 +100,10 @@ void dispatchOnType(object_t obj, Lambda process) {
         break;
         
         default:
+        // cannot happen
         throw std::runtime_error("Invalid object_t type (id: `" + std::to_string(int(obj.type)) + "`)");
     }
 }
-
-template <typename T, typename std::enable_if_t<std::is_pointer<T>::value>* = 0>
-void println(T val) { std::cout << (void*)val << std::endl; }
 
 template <typename T>
 void println(T val) {
@@ -103,6 +112,7 @@ void println(T val) {
 
 template<>
 void println<uint8_t>(uint8_t val) {
+    std::cout << "0b";
     for (int i = 7; i >= 0; --i) {
         std::cout << ((val & 1 << i) == 0? 0 : 1);
     }
@@ -150,18 +160,13 @@ int main()
     
     {
         std::map<identifier_t, object_t*> struct_ = {};
-        auto obj = object_t(List, (std::map<identifier_t, object_t*>*)&struct_);
+        auto obj = object_t(Struct, (std::map<identifier_t, object_t*>*)&struct_);
         dispatchOnType(obj, [](auto n){println(n);});
     }
     
     {
         std::map<object_t*, object_t*> map = {};
-        auto obj = object_t(List, (std::map<object_t*, object_t*>*)&map);
-        dispatchOnType(obj, [](auto n){println(n);});
-    }
-    
-    {
-        auto obj = object_t(0, 'A'); // invalid type id
+        auto obj = object_t(Map, (std::map<object_t*, object_t*>*)&map);
         dispatchOnType(obj, [](auto n){println(n);});
     }
 }
