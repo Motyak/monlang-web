@@ -6,6 +6,16 @@
 
 using identifier_t = std::string;
 
+template <typename T>
+struct HashablePtr {
+    static_assert(std::is_pointer<T>::value, "Expected a pointer");
+
+    T ptr;
+    HashablePtr(T ptr) : ptr(ptr) {}
+    bool operator<(const HashablePtr& other) const { return *ptr < *other.ptr; }
+    bool operator==(const HashablePtr& other) const { return *ptr == *other.ptr; }
+};
+
 /* disguise types for uint8_t constants */
 struct _Byte   { uint8_t _; _Byte():   _(1){} };
 struct _Bool   { uint8_t _; _Bool():   _(2){} };
@@ -48,7 +58,7 @@ struct object_t {
         double                             asFloat;
         std::vector<object_t*>*            asList;
         std::map<identifier_t, object_t*>* asStruct;
-        std::map<object_t*, object_t*>*    asMap;
+        std::map<HashablePtr<object_t*>, object_t*>*    asMap;
     } __attribute__ ((packed)) value; // packed attribute reduces struct size from 16 to 9 bytes
     
     /* constructors */
@@ -59,7 +69,63 @@ struct object_t {
     explicit object_t(_Float  type,                             double value) : type(type._), value(_Value{.asFloat =value}) {}
     explicit object_t(_List   type,            std::vector<object_t*>* value) : type(type._), value(_Value{.asList  =value}) {}
     explicit object_t(_Struct type, std::map<identifier_t, object_t*>* value) : type(type._), value(_Value{.asStruct=value}) {}
-    explicit object_t(_Map    type,    std::map<object_t*, object_t*>* value) : type(type._), value(_Value{.asMap   =value}) {}
+    explicit object_t(_Map    type,    std::map<HashablePtr<object_t*>, object_t*>* value) : type(type._), value(_Value{.asMap   =value}) {}
+
+    
+
+    private:
+    int compareWithSameType(const object_t& other) const {
+        auto compare = [](auto lhs, auto rhs){
+            if (lhs < rhs) return -1;
+            else if (lhs == rhs) return 0;
+            return 1;
+        };
+
+        switch (this->type) {
+            case object_t::types::Byte:
+            return compare(this->value.asByte, other.value.asByte);
+            
+            case object_t::types::Bool:
+            return compare(this->value.asBool, other.value.asByte);
+            
+            case object_t::types::Char:
+            return compare(this->value.asChar, other.value.asChar);
+            
+            case object_t::types::Int:
+            return compare(this->value.asInt, other.value.asInt);
+            
+            case object_t::types::Float:
+            return compare(this->value.asFloat, other.value.asFloat);
+            
+            case object_t::types::List:
+            return compare(this->value.asList, other.value.asList);
+            
+            case object_t::types::Struct:
+            return compare(this->value.asStruct, other.value.asStruct);
+            
+            case object_t::types::Map:
+            return compare(this->value.asMap, other.value.asMap);
+            
+            default:
+            // cannot happen
+            throw std::runtime_error("Invalid object_t type (id: `" + std::to_string(int(this->type)) + "`)");
+        }
+    }
+
+    /* make it hashable */
+    public:
+    bool operator<(const object_t& other) const {
+        if (this->type != other.type) {
+            return this->type < other.type;
+        }
+        return compareWithSameType(other) == -1;
+    }
+    bool operator==(const object_t& other) const {
+        if (this->type != other.type) {
+            return false;
+        }
+        return compareWithSameType(other) == 0;
+    }
 };
 
 template <typename Lambda>
@@ -125,6 +191,11 @@ void print<bool>(bool val) {
 
 #ifdef MAIN1_CPP
 
+#define println(x) { \
+    print(x); \
+    std::cout << std::endl; \
+}
+
 int main()
 {
     
@@ -166,8 +237,8 @@ int main()
     }
     
     {
-        std::map<object_t*, object_t*> map = {};
-        auto obj = object_t(Map, (std::map<object_t*, object_t*>*)&map);
+        std::map<HashablePtr<object_t*>, object_t*> map = {};
+        auto obj = object_t(Map, (std::map<HashablePtr<object_t*>, object_t*>*)&map);
         dispatchOnType(obj, [](auto n){println(n);}); //~ 0x7fff7933c070
     }
 }

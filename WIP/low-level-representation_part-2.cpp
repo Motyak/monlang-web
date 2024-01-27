@@ -100,12 +100,12 @@ int main()
         auto value2 = object_t(Int, int64_t(2));
         auto key3 = object_t(Float, double(3.14));
         auto value3 = object_t(Bool, bool(false));
-        std::map<object_t*, object_t*> map = {
-            {&key1, &value1},
-            {&key2, &value2},
-            {&key3, &value3}
+        std::map<HashablePtr<object_t*>, object_t*> map = {
+            {HashablePtr(&key1), &value1},
+            {HashablePtr(&key2), &value2},
+            {HashablePtr(&key3), &value3}
         };
-        auto obj = object_t(Map, (std::map<object_t*, object_t*>*)&map);
+        auto obj = object_t(Map, (std::map<HashablePtr<object_t*>, object_t*>*)&map);
         dispatchOnType(obj, [](auto n){print(n);});
         std::cout << std::endl;
         std::cout << sizeof(key1) << " * 6"
