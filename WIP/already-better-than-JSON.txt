@@ -1,0 +1,25 @@
+
+```json
+    {
+        // i can put comments in my json,..
+        "field1": "fds",
+        /*
+        they are ignored,
+        and therefore discarded from the final string
+        */
+        "field2": 0
+    }
+``` /*
+{
+    "field1": "fds",
+    "field2": 0
+}
+*/
+
+/*
+Suppose the following code is saved in a file named `script.mlg`,
+then the following bash command:
+`monlang script.mlg | jq -r '.field1'`
+will print in STDOUT:
+`fds`
+*/
