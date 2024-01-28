@@ -60,7 +60,7 @@ let Worker::printAsJson (worker):{
 }
 
 let person-name Name("Tommy")
-let person-age Uint(27) |> Age()
+let person-age Age(27)
 let worker-money Uint(1'000)
 var worker Worker(person-name, person-age, worker-money)
 
