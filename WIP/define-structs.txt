@@ -1,0 +1,68 @@
+
+
+
+struct Uint {
+    is Int // extends `Int` fundamental type, which has only one field (itself), referred with `$1` magic variable
+    ctor {
+        // this guard with nothing behind, in the context of a struct ctor, serves as a runtime assertion
+        [ $1 > 0 ]
+    }
+}
+struct Age Uint // create a type alias for Uint, named `Age`
+
+struct Name {
+    is List<Char> // extends `List` fundamental type
+    ctor {
+        foreach $1 {
+            [ $1 |> isALetter() ] // here `$1` refers to the current Char element in the List
+        }
+    }
+}
+
+struct CustomStruct ; // a doc type (alias to nothing)
+
+struct Person {
+    is CustomStruct // just a doc type, doesn't inherit from any field
+    fields {
+        Name name
+        Age age
+    }
+
+    /* a default ctor is automatically generated with one parameter per field (in the same order) */
+}
+
+struct Worker {
+    is Person // inherits from Person fields
+    fields {
+        Uint money
+    }
+
+    /* Person's ctor will be called whenever the default ctor of Worker is called */
+}
+
+let Worker::printAsJson (worker):{
+    let str ```json
+        {
+            "name": "${worker.name}",
+            "age": ${worker.age},
+            "money": ${worker.money}
+        }
+    ```
+    print(str)
+    ;
+}
+
+let person-name Name("Tommy")
+let person-age Uint(27) |> Age()
+let worker-money Uint(1'000)
+var worker Worker(person-name, person-age, worker-money)
+
+/* from here, I have a `Worker` object in the global environment (because of `var`) */
+
+Worker::printAsJson(worker) /*
+{
+    "name": "Tommy",
+    "age": 27,
+    "money": 1000
+}
+*/
