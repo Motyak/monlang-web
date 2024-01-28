@@ -1,5 +1,5 @@
 
-```json
+```json//
     {
         // i can put comments in my json,..
         "field1": "fds",
@@ -9,6 +9,7 @@
         */
         "field2": 0
     }
+    
 ``` /*
 {
     "field1": "fds",

@@ -5,7 +5,7 @@
 type Uint {
     is Int // extends `Int` fundamental type, `$1` magic variable refers to itself (its value at the time we build the object)
     ctor {
-        // this guard with nothing behind, in the context of a struct ctor, serves as a runtime assertion
+        // this guard with nothing behind, in the context of a type/struct ctor, serves as a runtime assertion
         [ $1 > 0 ]
     }
 }
@@ -14,8 +14,12 @@ type Age Uint // create a type alias for Uint, named `Age`
 type Name {
     is List<Char> // extends `List` fundamental type
     ctor {
-        foreach $1 {
-            [ $1 |> isALetter() ] // here `$1` refers to the current Char element in the List
+        let this $1
+        [ len(this) >= 2 ]
+        [ this[0] |> is-a-capital-letter() ]
+        foreach this[1..=] {
+            let cur-char $1
+            [ cur-char |> is-a-small-letter() ]
         }
     }
 }
