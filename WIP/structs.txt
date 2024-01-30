@@ -1,0 +1,63 @@
+
+==============================
+if you want to reuse the structs..
+==============================
+
+type Uint {
+    is Int
+    ctor {
+        [ this >= 0 ]
+    }
+}
+
+type Name {
+    is List<Char>
+    ctor {
+        [ len(this) >= 2 ]
+        [ this[0] |> is-a-capital-letter() ]
+        foreach this[1..=] {
+            let cur-char $1
+            [ cur-char |> is-a-small-letter() ]
+        }
+    }
+}
+
+type Age Uint
+
+struct Person {
+    field {
+        Name name
+        Age age
+    }
+}
+
+==============================
+otherwise... (the recommended approach for simple structs)
+==============================
+
+struct Person {
+    field {
+        List<Char> name
+        Int age
+    }
+    ctor {
+        /* name */
+        [ len(name) >= 2 ]
+        [ name[0] |> is-a-capital-letter() ]
+        foreach name[1..=] {
+            let cur-char $1
+            [ cur-char |> is-a-small-letter() ]
+        }
+
+        /* age */
+        [ age >= 0 ]
+    }
+}
+
+================================================================================
+
+- block expression (where an expression is expected, evaluate the block as a sub-program and substitute the block with its resulting (final) expression)
+- lambda block (part of a lambda expression)
+- loop block (foreach, while, do..while)
+- struct block
+- type block (same as struct except we can't have fields)
