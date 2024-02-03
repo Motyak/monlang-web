@@ -1,0 +1,11 @@
+// a string that happens to have regex metacharacters
+let str "[0-9]+" // <=> /[0-9]+/
+let sub-regex /^[0-9]+$/ // /^[0-9]+$/
+
+// interpolating string inside a regex => escapes all regex metacharacters, so that we search for the literal string
+let reg1 /${str}/ // /\[0-9\]\+/
+// interpolating regex inside a regex within a non-captured group => don't escape anything, and add everything in a non-captured group
+let reg2 /${?:sub-regex}+/ // /(?:^[0-9]+$)+/
+// interpolating regex inside a regex => don't escape anything, and add everything in a group named after the sub-regex variable name (hyphens will be replaced with underscores and underscores by double underscores)
+let reg3 /${sub-regex}+/ // /(?P<sub_regex>[0-9]+)+/
+

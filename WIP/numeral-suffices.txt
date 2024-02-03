@@ -1,0 +1,22 @@
+You can add a suffix to numbers (starting with an underscore), they only serve as documentation and readability
+
+123_ * "T" // 123 times the letter 'T'
+
+123_sec // 123 seconds
+
+123_min // 123 minutes
+
+123_hr // 123 hours
+
+=====================
+
+Only use the number digits separator when it benefits for readability
+prefer this:
+| 1000
+over this:
+| 1'000
+------------
+prefer this:
+| 99'999
+over this:
+| 99999

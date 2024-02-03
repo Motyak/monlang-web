@@ -1,0 +1,15 @@
+Int?(23)
+  -> produces an Optional<Int> with value 23
+
+Int?()
+  -> produces an empty Optional<Int>
+
+Int(23)
+  -> produces an Int with value 23
+
+Int()
+  -> illegal (Int is a type, and therefore its ctor requires exactly one value)
+    -> exception: optional types => Int?() produces an empty Optional<Int>
+
+a Struct with no field at all is completely useless
+a Struct with only 1 field should be a type (type alias)

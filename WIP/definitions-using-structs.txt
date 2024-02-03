@@ -1,0 +1,67 @@
+
+/* First, let's consider a simple struct: */
+struct Person {
+    fields {
+        List<Char> name
+        Int age
+    }
+    ctor {
+        /* name */
+        [ len(name) >= 2 ]
+        [ name[0] |> is-a-capital-letter() ]
+        foreach name[1..=] {
+            let cur-char $1
+            [ cur-char |> is-a-small-letter() ]
+        }
+
+        /* age */
+        [ age >= 0 ]
+    }
+}
+
+namespace Person::
+
+/* some constants of type `Person` */
+let EMPTY Person("", 999)
+let EXAMPLE Person("John", 21)
+
+/* a from ctor wrapper */
+let from-json (str):{
+    let field (value-type, field-name):{
+        [ value-type |> in("STR", "UINT") ]
+        let value-type-reg [ value-type == "STR" ] /"(.*)"/ || /(\d+)/
+        str =~ /(?:{|,)\s*"${field-name}"\s*:\s*${?:value-type-reg}(?:,|})/
+    }
+
+    let name-field field("STR", "name")
+    let age-field field("UINT", "age")
+    Person(name-field, age-field)
+}
+
+namespace global // end of Person::
+
+/* now using the definitions */
+
+let introduce-person (person):{
+    [ person == Person::EMPTY ] || "I am nobody."
+    "My name is ${person.name}, I am ${person.age} years old."
+}
+
+let persons [Person::EMPTY, Person::DEFAULT]
+var person-intros persons |> map(introduce-person) // 'var' because we need to wait until introductions are built before printing them in order, we could also have just used a 'foreach' loop to print each element
+*person-intros |> println() /*
+I am nobody.
+My name is John, I am 21 years old.
+*/
+// the following would have caused issues (broken stdout):
+// *persons |> introduce-person() |> println()
+
+let str ```json<
+{
+    "name": "John",
+    "age": 21
+}
+```
+Person::from-json(str) |> introduce-person() |> println() /*
+My name is John, I am 21 years old.
+*/
