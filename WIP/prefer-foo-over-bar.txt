@@ -1,0 +1,50 @@
+
+==================== #1000 =======================
+
+when a variable name can be ambiguous (verb or noun)
+=> prefix the verb with 'fn_' to indicate it's a function/lambda
+
+-------- prefer ----------------------------------
+var set Set::of(1, 2, 3)
+
+let assign-x-to-y (x, OUT y):{y = x}
+var some-variable 42
+let fn_set(x) assign-x-to-y(x, &some-variable)
+
+--------- over -----------------------------------
+var some-set Set::of(1, 2, 3)
+
+let assign-x-to-y (x, OUT y):{y = x}
+var some-variable 42
+let set(x) assign-x-to-y(x, &some-variable)
+
+==================== #1001 =======================
+
+when a numeral is hard to read
+=> use digits separators
+BUT don't make it a stupid convention (e.g. 1000 is perfectly readable)
+
+-------- prefer ----------------------------------
+var a 11'111
+var b 1000
+
+--------- over -----------------------------------
+var a 11111
+var b 1'000
+
+==================== #1002 =======================
+
+use a numeral doc suffix if it adds useful info/context
+BUT don't use it everywhere, don't make any stupid convention
+
+-------- prefer ----------------------------------
+let timeout 3600_sec
+let another-timeout 60 * 60_sec
+let indent 4 * " "
+
+--------- over -----------------------------------
+let timeout 3600 // seconds
+let another-timeout 60 * 60 // seconds
+let indent 4_times * " "
+
+==================================================
