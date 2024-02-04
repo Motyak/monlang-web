@@ -1,0 +1,19 @@
+let opt-person1 Person?()
+let opt-person2 Person?("John", 23)
+
+/* only handle non-empty elements */
+foreach [opt-person1, opt-person2]
+{
+  let opt-person $1
+  let person-name opt-person?.name
+  [ some(person-name) ]
+  print("${person-name}")
+}
+
+/* use a default value for empty elements */
+foreach [opt-person1, opt-person2]
+{
+  let opt-person $1
+  let person opt-person ?? Person::DEFAULT
+  print("${person.name}")
+}
