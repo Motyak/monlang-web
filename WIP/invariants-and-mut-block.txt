@@ -1,0 +1,76 @@
+our struct:
+```
+struct NbAndItsOpp {
+    fields {
+        Float nb
+        Float opp
+    }
+
+    invariants {
+        [ opp == -nb ]
+        [ nb == -opp ]
+    }
+}
+```
+
+V1:
+```
+namespace NbAndItsOpp::
+
+/* this is incorrect, we will analyze why then fix it */
+let set (OUT obj, nb):{
+    obj.nb = nb
+    obj.opp = -nb
+}
+
+namespace global // end of NbAndItsOpp
+
+var obj NbAndItsOpp(2.0, -2.0) // ok because we set both fields at the same time
+NbAndItsOpp::set(&obj, 4.0) /* not ok because the function changes one field at a time :
+{
+    obj.nb = 4.0
+    // RuntimeException caused by struct invariant being violated
+    obj.opp = -4.0
+}
+*/
+```
+
+V2:
+```
+namespace NbAndItsOpp::
+
+/* fixed code */
+let set (OUT obj, nb):{
+    /* mut block allows us to delay invariants check AFTER we finished populating our struct value,
+       instead of everytime a field mutates.    
+    */
+    mut {
+        obj.nb = nb
+        obj.opp = -nb
+    }
+}
+
+namespace global // end of NbAndItsOpp
+
+var obj NbAndItsOpp(2.0, -2.0) // ok because we set both fields at the same time
+NbAndItsOpp::set(&obj, 4.0) /* ok because we now mutate struct fields inside a mut block
+{
+    mut {
+        obj.nb = 4.0
+        obj.opp = -4.0
+    }
+    // struct invariants are checked here
+}
+*/
+```
+
+---
+
+or simply stick to using ctor :
+```
+var obj {
+    let nb 2.0
+    let opp -2.0
+    NbAndItsOpp(nb, opp)
+}
+```

@@ -1,0 +1,67 @@
+
+# prefer using ctor if its simple enough
+
+suppose we have this struct:
+```
+struct NbAndItsOpp {
+    fields {
+        Float nb
+        Float opp
+    }
+
+    invariants {
+        [ opp == -nb ]
+        [ nb == -opp ]
+    }
+}
+```
+
+prefer this:
+```
+var obj {
+    let nb 2.0
+    let opp -2.0
+    NbAndItsOpp(nb, opp)
+}
+```
+
+over this:
+```
+var obj _
+mut {
+    obj.nb = 2.0
+    obj.opp = -2.0
+}
+```
+
+---
+
+suppose we have this type:
+```
+type Matrix {
+    is List<List<Float>> // there is an implicit invariant here, make sure cell values are `Float`s
+    invariants {
+        /* make sure its a 2x2 matrix */
+        [ len(this) == 2 ]
+        foreach this {
+            [ len($1) == 2 ]
+        }
+    }
+}
+```
+
+prefer this:
+```
+var matrix _
+mut {
+    matrix[0][0] = 1.0
+    matrix[0][1] = 2.0
+    matrix[1][0] = 3.0
+    matrix[1][1] = 4.0
+}
+```
+
+over this:
+```
+var matrix Matrix([[1.0, 2.0], [3.0, 4.0]])
+```

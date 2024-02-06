@@ -15,5 +15,5 @@ foreach [opt-person1, opt-person2]
 {
   let opt-person $1
   let person opt-person ?? Person::DEFAULT
-  print("${person.name}")
+  print("${person.name}") // `Person::DEFAULT`'s name
 }
