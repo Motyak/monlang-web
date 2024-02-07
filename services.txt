@@ -1,0 +1,93 @@
+﻿type LogLevel Int
+enum LogLevelEnum {
+    fields {
+        LogLevel val
+    }
+    enumerates {
+        NONE = LogLevel(0)
+
+        ERROR = LogLevel(1)
+        WARNING = LogLevel(2)
+        INFO = LogLevel(3)
+        DEBUG = LogLevel(4)
+
+        ALL = LogLevel(9999)
+    }
+}
+
+/* register a service */
+// /!\ CONVENTION STYLE: ALWAYS END SERVICE IDENTIFIER WITH `Svc`
+service LoggingSvc {
+    abbrev = Log
+    conf {
+        LogLevel LEVEL = LogLevelEnum::INFO // default value
+        OutputStream OUTPUT-STREAM = InOutEnum::STDERR // also default value
+    }
+    methods {
+        let log (prefix, format, args...):{
+            let msg format("${prefix} ${format}\n", args)
+            Log.OUTPUT-STREAM << msg
+        }
+
+        err = (format, args...):{
+            [ Log.LEVEL <= LogLevelEnum::ERROR ]
+            log("ERR", format, args)
+        }
+
+        warn = (format, args...):{
+            [ Log.LEVEL <= LogLevelEnum::WARNING ]
+            log("WARN", format, args)
+        }
+
+        info = (format, args...):{
+            [ Log.LEVEL <= LogLevelEnum::INFO ]
+            log("INFO", format, args)
+        }
+
+        debug = (format, args...):{
+            [ Log.LEVEL <= LogLevelEnum::DEBUG ]
+            log("DEBUG", format, args)
+        }
+    }
+}
+/* from now on, the service is up and running, waiting for incoming messages */
+
+/* we can change its configuration in real time, which will impact following method calls */
+Log.LEVEL = LogLevelEnum::ALL
+Log.OUTPUT-STREAM = InOutEnum::STDOUT
+
+/* send messages through method calls */
+Log.err("msg")
+Log.warn("msg")
+Log.info("msg")
+Log.debug("msg")
+/*
+ERR msg
+WARN msg
+INFO msg
+DEBUG msg
+*/
+
+================================================
+
+/* a proxy service, will always setup its own configuration before sending a message, all of that is done in a transaction block <=> mut block */
+service ErrorReportingSvc {
+    abbrev = Err
+    proxies LoggingSvc
+    conf {
+        LEVEL = LogLevelEnum::ERROR
+    }
+    methods {
+        log = (msg):{
+            LoggingSvc.err("${msg}")
+        }
+    }
+}
+
+[ false ] || Err.log("requirement not met") /*
+ERR requirement not met
+*/
+
+================================================
+
+- variable magique `$old` après avoir fait une affectation `lvalue = rvalue`

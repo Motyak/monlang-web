@@ -1,0 +1,177 @@
+﻿
+type Str List<Char>
+
+struct MyEnum {
+	fields {
+		Str val
+	}
+}
+
+namespace MyEnum::
+
+let undefined MyEnum("")
+let STUDIO MyEnum("eods-studio")
+let JOB MyEnum("eods-das-job")
+
+namespace global // end of MyEnum::
+
+
+let print-enum-val (enum):{
+    Enum(&enum)
+	println(enum.val)
+	; // optional here because println doesn't return any value
+}
+
+MyEnum::STUDIO |> print-enum-val() // 0
+
+============================================================
+
+
+// /!\ CONVENTION STYLE: ALWAYS END ENUM IDENTIFIER WITH `Enum`, 
+// .. that way we know it's an enum when we access, iterate or construct AND
+// .. it also leaves the name without the suffix in case you want custom inner value
+// .. e.g.:
+// type List<List<Float>> Matrix
+// enum MatrixEnum {
+//     enumerates {
+//         EMPTY = Matrix([])
+//         EXAMPLE = Matrix([[1.0, 2.0], [3.0, 4.0]])
+//     }
+//     ...
+// }
+enum MyEnum {
+	fields {
+		Str val
+	}
+	/* we can't have two enumerates poiting to the same underlying value */
+	enumerates {
+		undefined = MyEnum("")
+		STUDIO = MyEnum("eods-studio")
+		JOB = MyEnum("eods-das-job")
+	}
+}
+
+let some-var _
+let enum1 MyEnum(some-var) // RuntimeException: use of uninitialized variable
+
+let some-other-var ""
+let enum2 MyEnum(some-other-var)/* 
+enum1 == MyEnum::undefined
+*/
+let enum3 MyEnum::STUDIO /*
+enum2.val == "eods-studio"
+*/
+let outside-value "foo"
+let enum4 MyEnum?(outside-value) // returns an empty Optional<MyEnum>, should be used when we don't necessarily expect a valid value
+let enum5 MyEnum(outside-value) // throws a RuntimeException, should be used when we expect a valid value
+
+foreach MyEnum<K, V> {
+	println("{} -> {}", $K, $V) /*
+	STUDIO -> eods-studio
+	JOB -> eods-das-job
+	*/
+}
+
+foreach MyEnum<V> {
+	let value $V
+	println("${value}") /*
+	eods-studio
+	eods-das-job
+	*/
+}
+
+{
+	print("[")
+	let my-enumerates MyEnum::asEntries()
+	foreach my-enumerates |> drop(1) {
+		let entry $1
+		print("\"${entry.key}\":\"${entry.value}\", ")
+		/*
+	}
+	let last-enumerate my-enumerates[-1]?
+    [ some(last-enumerate) ]
+	print("\"${last-enumerate.key}\":\"${last-enumerate.value}\")
+	print("]")
+	println()
+    /*
+    ["STUDIO":"eods-studio", "JOB":"eods-das-job"]
+    */
+}
+
+
+
+
+
+
+
+
+
+
+
+============================================================
+
+type Uint {
+	is Int
+	invariants {
+		[ $this >= 0 ]
+	}
+}
+
+struct Person {
+	fields {
+		Uint val
+	}
+}
+
+namespace Person::
+
+let STUDIO Person(0)
+let JOB Person(1)
+
+namespace global // end of Person::
+
+service PersonEnum {
+	fields {
+		Map<Name, Person> enumerates
+	}
+	invariants {
+		[ values(enumerates) |> has-no-duplicate() ]
+	}
+}
+
+namespace PersonEnum::
+
+let has-key (key):{
+	Str(&key)
+	PersonNum::enumerates |> has-key(key)
+}
+
+let get (key):{
+	Str(&key)
+	PersonEnum::enumerates[key]! // RuntimeException if key not found
+}
+
+let try-to-get (key):{
+	Str(&key)
+	PersonEnum::enumerates[key]? // empty Optional if key not found
+}
+
+// block allows to restrain `enumerates` scope
+{
+	// in an expression block, variables defined locally are not part of the namespace per se
+
+	// let enumerates Map::of(["PERSON-A", 0], ["PERSON-B", 1])
+	let enumerates {
+		var table _
+		table["PERSON-A"] = Person(0)
+		table["PERSON-B"] = Person(1)
+		table
+	}
+	// this initiates the service (singleton)
+	PersonEnum(enumerates) // doesn't return an expression, rather nil, because is a service
+	; // optional here because of this ^^^^
+}
+
+namespace global // end of PersonEnum::
+
+
