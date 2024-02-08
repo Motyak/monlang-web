@@ -1,0 +1,73 @@
+﻿Python:
+```
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "site-packages"))
+```
+
+VS
+
+monlang:
+```
+let file-path AbsPath($this-file)
+let parent-dir-path Path::parent-dir(file-path) |> AbsPath()
+let new-path AbsPath(parent-dir-path, "site-packages/")
+Sys.path += [new-path]
+```
+
+========================================================
+
+Groovy:
+```
+if (!g_results.containsKey(run.id)) {
+    g_results[run.id] = []
+}
+g_results[run.id].add(test)
+```
+
+VS
+
+monlang:
+```
+/* leveraging on collections autovivification feature */
+g_results[run.id] += [test] /*
+automatically creates `g_results[run.id]` if it doesn't exist and set its value to <uninitialized>.
+`+= [test]` will either append to existing list or assign a freshly created list with `test` element in it.
+*/
+```
+
+========================================================
+
+Groovy:
+```
+def nbOfFlakys = g_results.containsKey(run.id)? g_results[run.id].size() : 0
+```
+
+VS
+
+monlang:
+```
+var nb-of-flakys len(g_results[run.id]?) ?? 0 // any function that takes a <T> accept taking an Optional<T> instead and will forward any empty Optional passed
+```
+
+========================================================
+
+Groovy:
+```
+currentBuild.description = ""
+currentBuild.description += "+ Total nb of scanned tests: ${totalScannedTests}\n"
+currentBuild.description += "|   + Nb of failed tests reported: ${totalNbOfFailedTests} (/${totalScannedTests})\n"
+currentBuild.description += "|   |   + Nb of non-flaky tests evaluated: ${totalNbOfKos} (/${totalNbOfFailedTests})\n"
+currentBuild.description += "|   |   + Nb of flaky tests evaluated: ${totalNbOfFlakys} (/${totalNbOfFailedTests})"
+```
+
+VS
+
+monlang:
+'''
+current-build.description = ```
+    + Total nb of scanned tests: ${total-scanned-tests}
+    |   + Nb of failed tests reported: ${total-nb-of-failed-tests} (/${total-scanned-tests})
+    |   |   + Nb of non-flaky tests evaluated: ${total-nb-of-kos} (/${total-nb-of-failed-tests})
+    |   |   + Nb of flaky tests evaluated: ${total-nb-of-flakys} (/${total-nb-of-failed-tests})
+```
+
+'''
