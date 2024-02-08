@@ -1,8 +1,8 @@
 let sum-of-digits (n):{
-    [ str(n) =~ /^\d+$/ ] || "not a digit"
+    [ Str(n) =~ /^\d+$/ ] || err("not a digit")
     var res 0
-    foreach str(n) {
-        res += uint($1)
+    foreach Str(n) {
+        res += Int($cur)
     }
     res
 }
@@ -10,7 +10,7 @@ let sum-of-digits (n):{
 let proc1 (n):{
     {
         [ n % 10 != 0 ]
-        [ sum-of-digits < 10 ]
+        [ sum-of-digits(n) < 10 ]
         return n
     }
     91 - n
@@ -21,7 +21,7 @@ let proc2 (n):{n * 999'999 |> int-div(91)}
 let seq 1..=45 |> map(proc1) |> map(proc2)
 
 foreach [13, 27, 39, 40, 46] {
-    seq[$1 - 1] |> println("$1 -> {}", _) /*
+    println("{} -> {}", $cur, seq[$cur - 1]) /*
     13 -> 142857
     27 -> 296703
     39 -> 571428

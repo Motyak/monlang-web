@@ -1,0 +1,54 @@
+operator::in
+  -> rhs must be a 'collection kind of data
+operator::!in
+  -> rhs must be a 'collection kind of data
+
+operator::[]
+operator::[]?
+operator::[]!
+
+operator::?
+var a Int?(12)
+fn(a) // pass an Optional<Int> as argument, will be handled by the function
+fn(a?) /* unwrap the Optional before passing it as argument, 
+or abort if empty and no default/variadic argument
+*/
+a + 10 // 22
+{
+  let b Int?()
+  a + b? // abort the operation
+}
+
+
+
+---
+
+let print (msg, end="\n"):{
+  ...
+}
+
+{
+    let msg "test"
+    let end Str?()
+    print(msg, end) // will call `print("test", Str?())`
+}
+
+{
+    let msg "test"
+    let end Str?()
+    print(msg, end?) // unwrap `end`, will call `print("test", "\n")`
+}
+
+{
+    let msg Str?("test")
+    let end Str?()
+    print(msg?, end?) // unwrap `msg` and `end`, will call `print("test", "\n")`
+}
+
+{
+    let msg Str?()
+    let end Str?()
+    print(msg?, end?) // unwrap `msg` and `end`, won't call the function
+}
+
+
