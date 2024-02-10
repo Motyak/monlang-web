@@ -1,0 +1,139 @@
+
+# Providing a List *as scalar* vs *as array* when an array is required
+
+{
+    var list1 [1, 2, 3]
+    var list2 [4, 5]
+    list1 += list2 // list1 == [1, 2, 3, 4, 5] /* 
+    `List::operator+(List)` requires a List of elements to append to lhs List,..
+    in this case when passing `list2` which is already a List by itself,..
+    it's like we ask to add its content (which is an array)
+    */
+}
+
+{
+    var list1 [1, 2, 3]
+    var list2 [4, 5]
+    list1 += [list2] // list1 == [1, 2, 3, [4, 5]] /* 
+    `List::operator+(List)` requires a List of elements to append to lhs List,..
+    in this case when passing `[list2]`, we use list2 as a scalar (single value),..
+    it's like we ask to add the list itself as a single element
+    */
+}
+
+{
+    var list [1, 2, 3]
+    // another use of list as an array (iterating through its content)
+    foreach list {
+        println($cur)
+    } /*
+    1
+    2
+    3
+    */
+}
+
+{
+    var list [1, 2, 3]
+    // another use of list as a scalar
+    foreach [list] {
+        println($cur)
+    } /*
+    [1, 2, 3]
+    */
+}
+
+# Providing a List as scalar when a scalar is required
+
+{
+    var list _ // list == <uninitialized>
+    list[0] = 1 // list == [1]
+    // nested lists
+    list[1] = [2, 3] // list == [1, [2, 3]]
+}
+
+# Providing a List as pointer when a scalar is required
+
+let zeros (OUT list):{
+    foreach list {
+        $cur = 0
+    }
+    ; // optional here since foreach never produce a value
+}
+
+var list [1, 2, 3]
+zeros(&list) /* here i pass the list as pointer
+=> for it to be used as an in/out parameter
+NOTE: If I had defined the list with a `let`, a temporary variable..
+..would have been created for the pointer to make sense (<=> mutating an expression)
+*/
+
+===============================================================
+
+
+# function signatures with kinds of parameters
+
+---
+
+## V1: reducer with an IN/OUT parameter
+
+/* reducer :: ('pointer, 'scalar) -> ;
+   reduce :: ('reducer, 'scalar, 'array) -> 'scalar
+*/ let reduce (reducer, initial, input):{
+    var acc initial
+    foreach input {
+        reducer(&acc, $cur)
+    }
+    acc
+}
+
+let add (OUT a, b):{a += b} // `operator+()` uses multiple dispatch for genericity
+
+let sum-of-ints reduce(add, &0, [1, 2, 3]) // 6
+let concat-of-strs reduce(add, &"T", "ommy") // Tommy
+
+---
+
+## V2: reducer with a return value
+
+/* reducer :: ('array, 'scalar) -> 'array
+   reduce :: ('reducer, 'scalar, 'array) -> 'scalar
+*/ let reduce (reducer, initial, input):{
+    var acc initial
+    foreach input {
+        acc = reducer(acc, $cur)
+    }
+    acc
+}
+
+let add (a, b):{a + b} // `operator+()` uses multiple dispatch for genericity
+
+let sum-of-ints reduce(add, 0, [1, 2, 3]) // 6
+let concat-of-strs reduce(add, "T", "ommy") // Tommy
+
+===============================================================
+
+*kinds* of data are orthogonal to *types* of data
+
+- the type of an expression/variable indicates the category of values we can expect from it
+- the kind of a parameter indicates HOW we wish to interpet the expression/variable,
+  therefore we can treat a typed expression/variable in multiple ways even if it only have one type.
+
+
+
+kinds of arguments (function call):
+- 'scalar
+- 'iterable
+    - 'stream (not necessarily finite, we consume it gradually)
+    - 'array (finite set)
+- 'pointer
+
+kinds of parameters (function definition):
+- 'scalar
+- 'iterable
+    - 'stream (not necessarily finite, we consume it gradually)
+    - 'array (finite set)
+- 'hash (table)
+- 'pointer
+- 'callable
+  -> 'callable<R(P...)>
