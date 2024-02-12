@@ -1,0 +1,18 @@
+
+# Str, concat strs:
+```
+str = "${str}newstuff" //appending `newstuff`
+str = "newstuff${str}" // prepending `newstuff`
+```
+
+# List, concat lists:
+```
+list = [*list, 1, 2, 3] // appending `1, 2, 3` to list content
+list = [1, 2, 3, *list] // prepending `1, 2, 3` to list content
+```
+
+# List (nested), concat lists:
+```
+list = [*list, [1, 2], 3] // appending `[1, 2], 3` (two elements) to list content
+list = [[1, 2], 3, *list] // prepending `[1, 2], 3` (two elements) to list content
+```
