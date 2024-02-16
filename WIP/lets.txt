@@ -1,0 +1,16 @@
+{
+    var a 1
+    let print-value-of-a {
+        var a_at-that-time a
+        println(a_at-that-time) // since arg has a tighter lifetime compared to the let, then its value is evaluated one time and used in the let as a constant
+    }
+    a = 2
+    print-value-of-a // 1
+}
+
+{
+    var a 1
+    let print-value-of-a println(a) // since arg has the same lifetime as the let, then it will generate a lambda that captures a reference to that variable in case its value changes afterward
+    a = 2
+    print-value-of-a // 2
+}
