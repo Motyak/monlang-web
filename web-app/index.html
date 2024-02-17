@@ -6,21 +6,6 @@
         <title>monlang - Homepage</title>
 
         <style>    
-            @font-face {
-                font-family: "JetBrainsMonoNL-ThinItalic";
-                src: url("fonts/JetBrainsMono-2.304/ttf/JetBrainsMonoNL-ThinItalic.ttf") format("truetype");
-            }
-
-            @font-face {
-                font-family: "JetBrainsMonoNL-Regular";
-                src: url("fonts/JetBrainsMono-2.304/ttf/JetBrainsMonoNL-Regular.ttf") format("truetype");
-            }
-
-            @font-face {
-                font-family: "JetBrainsMonoNL-Bold";
-                src: url("fonts/JetBrainsMono-2.304/ttf/JetBrainsMonoNL-Bold.ttf") format("truetype");
-            }
-            
             pre {
                 background-color: #F5F5F5;
             }
@@ -28,7 +13,12 @@
             code {
                 font-size: 20px;
                 line-height: 1.2;
-                /* color: #0451A5; */
+
+                /* neutral-consolas */
+                font-family: Consolas, monospace;
+                font-weight: 400;
+                font-style: normal;
+                color: rgba(4, 81, 165, 1)
             }
 
             ::selection {
@@ -40,79 +30,46 @@
                 font-family: Consolas, monospace;
                 font-weight: 400;
                 font-style: italic;
-                /* filter: opacity(50%); */
                 color: rgba(4, 81, 165, 0.5);
             }
 
-            .unimportant-jetbrains {
-                font-family: JetBrainsMonoNL-ThinItalic, monospace;
-                filter: opacity(50%);
-            }
-
-            .neutral-consolas {
+            /* .neutral-consolas {
                 font-family: Consolas, monospace;
                 font-weight: 400;
                 font-style: normal;
                 color: rgba(4, 81, 165, 1)
-            }
-
-            .neutral-jetbrains {
-                font-family: JetBrainsMonoNL-Regular, monospace;
-            }
+            } */
 
             .important-consolas {
                 font-family: Consolas, monospace;
                 font-weight: 700;
                 font-style: normal;
-                /* color: rgba(4, 81, 165, 1); */
-                /* filter: grayscale(35%); */
                 color: rgba(27, 77, 132, 1);
-            }
-
-            .important-jetbrains {
-                font-family: JetBrainsMonoNL-Bold, monospace;
-                filter: grayscale(35%);
             }
         </style>            
     </head>
     <body>
 
-
 <pre>
-<code class="unimportant-jetbrains">
-/*
+<code class="unimportant-consolas">/*
 calculate inverse power tower of order 2, e.g.: (27) = 3^^2 = 3^3
 */
-</code>
-<code class="neutral-jetbrains">
-let inv-tower (n):{
+</code><code class="important-consolas">let </code><code>inv-tower (n):{
     [ Int(n) >= 1 ] || err_invalid-arg()
     {
         [ n == 1 ]
-        return 1
+        </code><code class="important-consolas">return </code><code>1
     }
     Float(log_e(n) / lambert-w(log_e(n)).real)
 }
 
-let input 2
-let inv-tower_ inv-tower(input)
-let truncated-inv-tower Int::from(inv-tower_ * 1000) |> Frac(1000)
-print(truncated-inv-tower) // prints 1.559
-print(Float(1.559) ^ Float(1.559)) // prints 1.998237447840078
-</code>
+</code><code class="important-consolas">let </code><code>input 2
+</code><code class="important-consolas">let </code><code>inv-tower_ inv-tower(input)
+</code><code class="important-consolas">let </code><code>truncated-inv-tower Int::from(inv-tower_ * 1000) |> Frac(1000)
+print(truncated-inv-tower) </code><code class="unimportant-consolas">// prints 1.559
+<code>print(Float(1.559) ^ Float(1.559)) </code><code class="unimportant-consolas">// prints 1.998237447840078</code>
 </pre>
 
-<h1>test</h1>
-<pre>
-<code class="important-consolas">let</code><code> </code><code class="neutral-consolas">input 2</code><code> </code><code class="unimportant-consolas">// it's our input</code>
-<code class="neutral-consolas">let input 2 // it's our input</code>
-</pre>
-
-<h1>jetbrains</h1>
-<pre>
-<code class="important-jetbrains">let</code><code> </code><code class="neutral-jetbrains">input 2</code><code> </code><code class="unimportant-jetbrains">// it's our input</code>
-<code class="neutral-jetbrains">let input 2 // it's our input</code>
-</pre>
 
     </body>
 </html>
