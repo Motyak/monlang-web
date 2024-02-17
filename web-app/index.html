@@ -3,16 +3,35 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
-        <title>monlang - Homepage</title>
+        <title>monlang - Code Visualizer</title>
 
-        <style>    
+        <style>
+            body {
+                /* reset css */
+                margin: 0px;
+
+                display: inline-block;
+
+                border: solid;
+                border-width: 1px;
+                border-style: dashed;
+                border-color: red;
+            }
+
             pre {
+                /* reset css */
+                margin: 0px;
+
+                display: inline-block;
+            }
+
+            body {
                 background-color: #F5F5F5;
             }
 
             code {
-                font-size: 20px;
-                line-height: 1.2;
+                font-size: 1.25rem;
+                line-height: 1.15;
 
                 /* neutral-consolas */
                 font-family: Consolas, monospace;
@@ -33,13 +52,6 @@
                 color: rgba(4, 81, 165, 0.5);
             }
 
-            /* .neutral-consolas {
-                font-family: Consolas, monospace;
-                font-weight: 400;
-                font-style: normal;
-                color: rgba(4, 81, 165, 1)
-            } */
-
             .important-consolas {
                 font-family: Consolas, monospace;
                 font-weight: 700;
@@ -50,8 +62,7 @@
     </head>
     <body>
 
-<pre>
-<code class="unimportant-consolas">/*
+<pre><code class="unimportant-consolas">/*
 calculate inverse power tower of order 2, e.g.: (27) = 3^^2 = 3^3
 */
 </code><code class="important-consolas">let </code><code>inv-tower (n):{
@@ -67,8 +78,8 @@ calculate inverse power tower of order 2, e.g.: (27) = 3^^2 = 3^3
 </code><code class="important-consolas">let </code><code>inv-tower_ inv-tower(input)
 </code><code class="important-consolas">let </code><code>truncated-inv-tower Int::from(inv-tower_ * 1000) |> Frac(1000)
 print(truncated-inv-tower) </code><code class="unimportant-consolas">// prints 1.559
-<code>print(Float(1.559) ^ Float(1.559)) </code><code class="unimportant-consolas">// prints 1.998237447840078</code>
-</pre>
+</code><code>print(Float(1.559) ^ Float(1.559)) </code><code class="unimportant-consolas">// prints 1.998237447840078
+</code></pre>
 
 
     </body>
