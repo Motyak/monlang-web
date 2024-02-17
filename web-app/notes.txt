@@ -1,0 +1,16 @@
+
+- which font(s) ?
+- how to indicate special rendering for a portion of text (important or as opposed unimportant, neutral, ..)
+- which font size is ideal for reading ?
+
+---
+
+- font family (comprises of fonts sharing common design style)
+    - font (maps ascii code to a shape, called glyph)
+      -> each may vary in terms of stroke weight, slant, relative width, ...
+
+
+
+
+
+

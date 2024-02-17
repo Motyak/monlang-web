@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>monlang - Homepage</title>
+    </head>
+    <body>
+<pre>
+<code>
+/*
+calculate inverse power tower of order 2, e.g.: (27) = 3^^2 = 3^3
+*/
+let inv-tower (n):{
+    [ Int(n) >= 1 ] || err_invalid-arg()
+    {
+        [ n == 1 ]
+        return 1
+    }
+    Float(log_e(n) / lambert-w(log_e(n)).real)
+}
+
+let input 2
+let inv-tower_ inv-tower(input)
+let truncated-inv-tower Int::from(inv-tower_ * 1000) |> Frac(1000)
+print(truncated-inv-tower) // prints 1.559
+print(Float(1.559) ^ Float(1.559)) // prints 1.998237447840078
+</code>
+</pre>
+    </body>
+</html>
+
+<style>
+@font-face {
+    font-family: "Monaco";
+    src: url("fonts/Monaco.ttf") format("truetype");
+}
+
+body {
+    font-family: Monaco;
+}
+</style>
