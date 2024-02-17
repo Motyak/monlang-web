@@ -4,6 +4,38 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
         <title>monlang - Homepage</title>
+
+        <style>
+            /* @font-face {
+                font-family: "Monaco";
+                src: url("fonts/Monaco/Monaco.eot");
+                src: url("fonts/Monaco/Monaco.eot?#iefix") format("embedded-opentype"),
+                    url("fonts/Monaco/Monaco.woff2") format("woff2"),
+                    url("fonts/Monaco/Monaco.woff") format("woff"),
+                    url("fonts/Monaco/Monaco.ttf") format("truetype"),
+                    url("fonts/Monaco/Monaco.svg#Monaco") format("svg");
+                font-weight: normal;
+                font-style: normal;
+                font-display: swap;
+            } */
+            
+            @font-face {
+                font-family: "JetBrains Mono";
+                src: url("fonts/JetBrainsMono-2.304/ttf/JetBrainsMonoNL-Thin.ttf") format("truetype");
+            }
+            
+            code {
+                /*
+                font-family: "Monaco";
+                font-size: 24px;
+                line-height: 1.2;
+                */
+            
+                font-family: "JetBrains Mono", monospace;
+                font-size: 20px;
+                line-height: 1.2;
+            }
+            </style>            
     </head>
     <body>
 <pre>
@@ -29,14 +61,3 @@ print(Float(1.559) ^ Float(1.559)) // prints 1.998237447840078
 </pre>
     </body>
 </html>
-
-<style>
-@font-face {
-    font-family: "Monaco";
-    src: url("fonts/Monaco.ttf") format("truetype");
-}
-
-body {
-    font-family: Monaco;
-}
-</style>
