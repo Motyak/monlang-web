@@ -1,5 +1,6 @@
 
 - which font(s) ?
+  -> Consolas
 - how to indicate special rendering for a portion of text (important or as opposed unimportant, neutral, ..)
 - which font size is ideal for reading ?
 

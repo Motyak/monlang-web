@@ -5,25 +5,86 @@
         <meta name="viewport" content="width=device-width">
         <title>monlang - Homepage</title>
 
-        <style>            
+        <style>    
             @font-face {
-                font-family: "JetBrains Mono";
-                src: url("fonts/JetBrainsMono-2.304/ttf/JetBrainsMonoNL-Thin.ttf") format("truetype");
+                font-family: "JetBrainsMonoNL-ThinItalic";
+                src: url("fonts/JetBrainsMono-2.304/ttf/JetBrainsMonoNL-ThinItalic.ttf") format("truetype");
+            }
+
+            @font-face {
+                font-family: "JetBrainsMonoNL-Regular";
+                src: url("fonts/JetBrainsMono-2.304/ttf/JetBrainsMonoNL-Regular.ttf") format("truetype");
+            }
+
+            @font-face {
+                font-family: "JetBrainsMonoNL-Bold";
+                src: url("fonts/JetBrainsMono-2.304/ttf/JetBrainsMonoNL-Bold.ttf") format("truetype");
             }
             
+            pre {
+                background-color: #F5F5F5;
+            }
+
             code {
-                font-family: "JetBrains Mono", monospace;
                 font-size: 20px;
                 line-height: 1.2;
+                /* color: #0451A5; */
             }
-            </style>            
+
+            ::selection {
+                background-color: rgba(0, 120, 215, 1);
+                color: rgba(255, 255, 255, 1);
+            }
+
+            .unimportant-consolas {
+                font-family: Consolas, monospace;
+                font-weight: 400;
+                font-style: italic;
+                /* filter: opacity(50%); */
+                color: rgba(4, 81, 165, 0.5);
+            }
+
+            .unimportant-jetbrains {
+                font-family: JetBrainsMonoNL-ThinItalic, monospace;
+                filter: opacity(50%);
+            }
+
+            .neutral-consolas {
+                font-family: Consolas, monospace;
+                font-weight: 400;
+                font-style: normal;
+                color: rgba(4, 81, 165, 1)
+            }
+
+            .neutral-jetbrains {
+                font-family: JetBrainsMonoNL-Regular, monospace;
+            }
+
+            .important-consolas {
+                font-family: Consolas, monospace;
+                font-weight: 700;
+                font-style: normal;
+                /* color: rgba(4, 81, 165, 1); */
+                /* filter: grayscale(35%); */
+                color: rgba(27, 77, 132, 1);
+            }
+
+            .important-jetbrains {
+                font-family: JetBrainsMonoNL-Bold, monospace;
+                filter: grayscale(35%);
+            }
+        </style>            
     </head>
     <body>
+
+
 <pre>
-<code>
+<code class="unimportant-jetbrains">
 /*
 calculate inverse power tower of order 2, e.g.: (27) = 3^^2 = 3^3
 */
+</code>
+<code class="neutral-jetbrains">
 let inv-tower (n):{
     [ Int(n) >= 1 ] || err_invalid-arg()
     {
@@ -40,5 +101,18 @@ print(truncated-inv-tower) // prints 1.559
 print(Float(1.559) ^ Float(1.559)) // prints 1.998237447840078
 </code>
 </pre>
+
+<h1>test</h1>
+<pre>
+<code class="important-consolas">let</code><code> </code><code class="neutral-consolas">input 2</code><code> </code><code class="unimportant-consolas">// it's our input</code>
+<code class="neutral-consolas">let input 2 // it's our input</code>
+</pre>
+
+<h1>jetbrains</h1>
+<pre>
+<code class="important-jetbrains">let</code><code> </code><code class="neutral-jetbrains">input 2</code><code> </code><code class="unimportant-jetbrains">// it's our input</code>
+<code class="neutral-jetbrains">let input 2 // it's our input</code>
+</pre>
+
     </body>
 </html>
