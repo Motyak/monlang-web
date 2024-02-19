@@ -10,8 +10,10 @@
     - font (maps ascii code to a shape, called glyph)
       -> each may vary in terms of stroke weight, slant, relative width, ...
 
+==================================================================
 
+- Script qui permette de générer toutes les pages de notre site en static (dans un dossier public)
+  -> Python qui prend en entrée les fichiers .txt et génère les .html
 
-
-
+- Serveur PHP qui permet de générer les pages à la volée, en lisant les fichiers .txt sur le disque
 
