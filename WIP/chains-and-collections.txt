@@ -1,0 +1,71 @@
+struct ChainedList {
+    fields {
+        Int value
+        ChainedList? next
+    }
+}
+
+ChainedList(91, ChainedList?())
+
+let ext-var1 91
+let ext-var2 ChainedList?()
+ChainedList(Int(ext-var1), ChainedList?(ext-var2))
+
+let chained-list {
+    let value 91
+    let next ChainedList?()
+    ChainedList(value, next)
+}
+
+ChainedList(1, ChainedList?(2, ChainedList?(3, ChainedList?())))
+  -> ChainedList(1) <| ChainedList?(2) <| ChainedList?(3) <| ChainedList?()
+  -> ChainedList::fromArr(1, 2, 3) // user-defined fonction
+
+------------------------------------------
+
+// make sure ext-var2 is an Int
+let double Int(ext-var2) * 2 // implicit assumption check: Int ctor throws a RuntimeException
+[ double is Int ] // explicit assumption check
+
+// make sure ext-variable is a List
+List(ext-variable) // doesn't guarantee ext-variable is a List because it constructs a List with ext-variable as content
+List(*ext-variable) // doesn't guarantee ext-variable is a List because we can also unpack (`*`) any type inheriting from a List (also called a collection)
+let new-list List::copy(my-other-list) // implicit assumption check
+[ ext-variable is List ] // explicit assumption check, the only way to check List types
+
+// make sure ext-variable is a Map
+Map(ext-variable) // implicit assumption check, works since we cannot possibly initialize a Map with a correct value that way
+[ ext-variable is Map ] // explicit assumption check
+
+all ctors have a copy ctor, for a List the syntax is different:
+let new-list List::copy(my-other-list) // implicit assumption check
+
+==================================================
+
+List are ordered, when you define a list as ["a", "b", "c"], iterating through the elements of the list will give you "a" as the first element, then "b", etc..
+To access an element of a list, we subscript the list with the position of the element we are looking for, starting at #1, #2, ... #-2, #-1.
+
+list[#1] // access first element from list
+list[#-1] // access last element from list
+
+list[#2..=4] // sub-list: from #2 to #4 included
+list[#2..<4] // sub-list: from #2 to #4 excluded
+list[#4..=2] // sub-list: from #4 down to 2 included
+list[#4..<2] // sub-list: from #4 down to 2 excluded
+list[#2..=] // sub-list: from #2 up until the end (last element included)
+list[#2..<] // sub-list: from #2 up until the end (last element excluded)
+list[#5..=1] // sub-list: from #5 down until the beginning (first element included)
+list[#5..<1] // sub-list: from #5 down until the beginning (first element excluded)
+list[#-1..<2] // sub-list: from last element down to #2 excluded
+
+Maps comprise of key-value associations, Maps are NOT sorted and should not be considered as a collection of things, rather like a function that maps certain input to certain output. (if we iterate through a map content as Entries, we are not guaranteed to iterate in the same order as added or when initialized)
+
+map[1] // access value associated with key `1` in map
+map["foo"] // access value associated with key `"foo"` in map
+
+
+
+
+------------------------------------------
+
+optional value != optional parameter
