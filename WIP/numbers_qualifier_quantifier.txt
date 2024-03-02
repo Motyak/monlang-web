@@ -1,0 +1,23 @@
+numbers can serve many function depending on the context its used :
+
+number as qualifier (to specify a position/location to the subscript operator) :
+list[#2]
+list[#-1]
+map[32]
+
+number as quantifier (n times a character or substring to build a string) :
+let SPACE 0x20
+let spacing 5 * Char(SPACE)
+let text "A${spacing}B${spacing}C"
+"${text}" |> print()
+
+number as numeral (addition, multiplication, etc..) :
+10'989 * 13
+1/7
+
+
+
+
+
+- lambdas are function expression that can be ephemeral, tight to a scope, similar to a variable
+- closures are lambdas that uses an external variable (by capturing it)

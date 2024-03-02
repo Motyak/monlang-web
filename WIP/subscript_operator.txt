@@ -1,0 +1,19 @@
+[1, 2, 3, 4, 5][#4..<1][#-2..=][#1]
+  -> [4, 3, 2][#-2..=][#1]
+    -> [3, 2][#1]
+      -> 3
+
+
+[][#-1] // runtime error index out of bound
+[][#-1..<-1] // returns am empty list
+
+
+let int-get-opt(list, nth):{
+    [ list is List<Int> ]
+    [ nth is Int ]
+
+    // [ len(list[#nth..<nth]) == 1 ] Int?(list[#nth]) || Int?()
+    list[#nth]?
+}
+
+
