@@ -1,0 +1,58 @@
+﻿let reduce (reducer, initial, list):{
+    var acc initial
+    foreach list {
+        acc = reducer(acc, $curr)
+    }
+    acc
+}
+
+let add (a, b):{a + b}
+
+reduce(add, 0, [1, 2, 3]) /*
+(((0 `add` 1) `add` 2) `add` 3)
+((     1      `add` 2) `add` 3)
+(          3           `add` 3)
+               6
+*/
+
+
+reduce(add, 'T', "ommy") /*
+(((('T' `add` 'o') `add` 'm') `add` 'm') `add` 'y')
+(((     "To"       `add` 'm') `add` 'm') `add` 'y')
+((           "Tom"            `add` 'm') `add` 'y')
+(                  "Tomm"              ) `add` 'y')
+                          "Tommy"
+*/
+
+
+
+let compose (f, g):{
+    (x):{g(f(x))} // will apply from left to right
+}
+
+let identity-fn (x):{x}
+
+{
+    let reducer compose
+    let initial identity-fn
+    let list {
+        var ret []
+        ret += (x):{x + 1}
+        ret += (x):{x * 2}
+        ret
+    }
+    reduce(reducer, initial, list)
+}
+
+
+
+let pipe(functions...) reduce(compose, identity-fn, [functions])
+
+{
+    let incThenDouble pipe((x):{x + 1}, (x):{x * 2})
+    incThenDouble(10)
+}
+
+
+
+
