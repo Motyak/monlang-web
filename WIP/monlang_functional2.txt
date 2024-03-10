@@ -28,6 +28,7 @@ reduce(add, 'T', "ommy") /*
 
 let compose (f, g):{
     (x):{g(f(x))} // will apply from left to right
+    // (x):{x |> f() |> g()}
 }
 
 let identity-fn (x):{x}
