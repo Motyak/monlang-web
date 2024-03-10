@@ -1,0 +1,162 @@
+type Uint {
+    is Int
+    invariants {
+        [ this >= 0 ]
+    }
+}
+
+namespace Bowling
+
+let NB-OF-PINS 10
+let TRIES-PER-FRAME 2
+let NB-OF-FRAMES 10
+
+type TryNb {
+    is Int
+    invariants {
+        [ this in 1..=TRIES-PER-FRAME ]
+    }
+}
+
+enum FrameEnum {
+    enumerates {
+        uninitialized = ""
+        INCOMPLETE = "Incomplete"
+        SPARE = "Spare"
+        STRIKE = "Strike"
+    }
+}
+
+type FrameNb {
+    is Int
+    invariants {
+        [ this in 1..=NB-OF-FRAMES ]
+    }
+}
+
+struct Frame {
+    fields {
+        Map<TryNb, Uint> knocked-out-pins
+        Uint score
+        FrameEnum outcome
+    }
+
+    invariants {
+        var sum 0
+        foreach knocked-out-pins<V> {
+            sum += $V
+        }
+        [ sum <= NB-OF-PINS ]
+    }
+}
+
+struct Game {
+    fields {
+        Map<FrameNb, Frame> frame
+        Uint total-score
+    }
+
+    invariants {
+        var sum 0
+        foreach frame<V> {
+            sum += 1
+        }
+        [ sum <= NB-OF-FRAMES ]
+    }
+}
+
+let NEW-GAME {
+    let frame [:]
+    let total-score 0
+    Game(score, total-score)
+}
+
+namespace global // end of Bowling
+
+let input-scores ```
+    10
+    4 6
+    7 3
+    10
+    10
+    0 0
+    0 0
+    3 5
+    6 4
+    10
+    10
+    9
+```
+
+// TODO: hardcoded for the moment (reads string constant), but should take input from stdin
+var input-stream {
+    var cur 1 // state variable
+    let next ():{
+        let try-consume-nb (str):{
+            var ret ""
+            while [ input-scores[#cur]? =~ /[0-9]/ ] {
+                ret += input-scores[#cur]
+                cur += 1
+            }
+            ret
+        }
+
+        let try-consume-spaces (str):{
+            var ret ""
+            while [ input-scores[#cur]? in [' ', '\t'] ] {
+                ret = " "
+                cur += 1
+            }
+            ret
+        }
+
+        let try-consume-newline (str):{
+            var ret ""
+            if [ input-scores[#cur]? == '\n' ] {
+                ret = "\n"
+                cur += 1
+            }
+            ret
+        }
+
+        var curr-token _
+        curr-token = try-consume-nb(input-scores)
+        [ curr-token == "" ] || return Str?(curr-token)
+
+        curr-token = try-consume-spaces(input-scores)
+        [ curr-token == "" ] || return Str?(curr-token)
+
+        curr-token = try-consume-newline(input-scores)
+        [ curr-token == "" ] Str?() || return Str?(curr-token)
+    }
+    next
+}
+
+// returns a stream of the game in progress
+let play-game (OUT input-stream):{
+    let is-over (game):{
+        let tenth-frame FrameNb(10)
+        [ game.frame |> has-key(tenth-frame) ] || return false
+        game.frame[tenth-frame].outcome != FrameEnum::uninitialized
+    }
+
+    /* state variables */
+    var game Bowling::NEW-GAME
+    var curr-frame-nb 1
+    var remaining-pins Bowling::NB-OF-PINS
+
+    let progress ():{
+        {
+            [ game != Bowling::NEW-GAME ]
+            [ game |> is-over() ]
+            return Game?()
+        }
+
+        var curr-move next(&input-stream)
+        [ some(curr-move) ] || err("Game has finished prematurely")
+
+        /* update current game */
+
+    }
+    progress
+}
