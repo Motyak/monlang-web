@@ -68,7 +68,7 @@ struct Game {
 let NEW-GAME {
     let frame [:]
     let total-score 0
-    Game(score, total-score)
+    Game(frame, total-score)
 }
 
 namespace global // end of Bowling
