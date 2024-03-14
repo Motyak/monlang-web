@@ -147,7 +147,6 @@ let play-game (OUT input-stream):{
 
     let progress ():{
         {
-            [ game != Bowling::NEW-GAME ]
             [ game |> is-over() ]
             return Game?()
         }
