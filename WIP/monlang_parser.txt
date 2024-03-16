@@ -1,0 +1,48 @@
+let try-consume-nb (str):{
+    var ret ""
+    while [ input-scores[#cur]? =~ /[0-9]/ ] {
+        ret += input-scores[#cur]
+        cur += 1
+    }
+    ret
+}
+
+------------------------------------------------
+
+-> ProgramWord #1: Atom: `let`
+-> ProgramWord #2: Atom: `try-consume-nb`
+-> ProgramWord #3: Association: `(str):{\n    var ret ""\n    while [ input-scores[#cur]? =~ /[0-9]/ ] {\n        ret += input-scores[#cur]\n        cur += 1\n    }\n    ret\n}`
+  -> leftPart: ParenthesesGroup: `(str)` -> one word: Atom: `str`
+  -> rightPart: CurlyBracketsGroup: `{\n    var ret ""\n    while [ input-scores[#cur]? =~ /[0-9]/ ] {\n        ret += input-scores[#cur]\n        cur += 1\n    }\n    ret\n}`
+    -> ProgramSentence #1: `var ret ""`
+      -> ProgramWord #1: Atom: `var`
+      -> ProgramWord #2: Atom: `ret`
+      -> ProgramWord #3: Quotation: ``
+    -> ProgramSentence #2: `while [ input-scores[#cur]? =~ /[0-9]/ ] {\n    ret += input-scores[#cur]\n    cur += 1\n}`
+      -> ProgramWord #1: Atom: `while`
+      -> ProgramWord #2: SquareBracketsTerm: `input-scores[#cur]? =~ /[0-9]/`
+        -> Word #1: PostfixSquareBracketsGroup: `input-scores[#cur]?`
+          -> leftPart: Atom: `input-scores`
+          -> rightPart: SquareBracketsGroup: `[#cur]?` -> one ProgramWord: Atom: `#cur`
+        -> Word #2: Atom: `=~`
+        -> Word #3: Regex: `[0-9]`
+      -> ProgramWord #3: CurlyBracketsGroup: `{\n        ret += input-scores[#cur]\n        cur += 1\n    }`
+        -> ProgramSentence #1: `ret += input-scores[#cur]`
+          -> ProgramWord #1: Atom: `ret`
+          -> ProgramWord #2: Atom: `+=`
+          -> ProgramWord #3: PostfixSquareBracketsGroup: `input-scores[#cur]`
+            -> leftPart: Atom: `input-scores`
+            -> rightPart: SquareBracketsGroup: `[#cur]` -> one ProgramWord: Atom: `#cur`
+        -> ProgramSentence #2: `cur += 1`
+          -> ProgramWord #1: Atom: `cur`
+          -> ProgramWord #2: Atom: `+=`
+          -> ProgramWord #3: Atom: `1`
+    -> ProgramSentence #3: `ret`
+      -> one ProgramWord: Atom: `ret`
+
+------------------------------------------------
+
+
+
+
+
