@@ -1,0 +1,103 @@
+
+EXPRESSION := PRIMITIVE-EXPRESSION
+        | IDENTIFIER
+        | UNATION
+        | BINATION
+        | TERNATION
+        | SquareBracketsGroup<EXPRESSION>
+
+---
+
+PRIMITIVE-EXPRESSION := INT | FRACTION | DECIMAL
+        | STRING
+        | LIST
+        | MAP
+        | LAMBDA
+
+INT := Atom<(0(x|b|o)'?)?[0-9]('?[0-9])*(_[a-z]+)?>
+
+DECIMAL := Path<Atom<[0-9]+>, Atom<[0-9]+>>
+        | PostfixParenthesesGroup<Path<Atom<[0-9]+>, Atom<[0-9]+>>, ParenthesesGroup<Atom<[0-9]+>>>
+
+FRACTION := Atom<[0-9]+/[0-9]+>
+
+STRING := Quotation<.*>
+
+LIST := SquareBracketsGroup<EXPRESSION*>
+
+MAP := Atom<[:]> | SquareBracketsGroup<Association<EXPRESSION, EXPRESSION>+>
+
+STATEMENT := // defined in another .txt
+LAMBDA := Association<ParenthesesGroup<IDENTIFIER*>, CurlyBracketsGroup<STATEMENT*>>
+
+---
+
+IDENTIFIER := 
+
+---
+
+UNATION := FUNCTION-CALL | SUBSCRIPT | FIELD-ACCESS
+
+FUNCTION-CALL := PostfixParenthesesGroup<EXPRESSION, ParenthesesGroup<EXPRESSION*>>
+
+SUBSCRIPT := PostfixSquareBracketsGroup<EXPRESSION, SquareBracketsGroup<EXPRESSION>>
+
+FIELD-ACCESS := Path<EXPRESSION, EXPRESSION>
+
+/*
+FIELD-ACCESS := Path<IDENTIFIER, IDENTIFIER>
+        | Path<UNATION, IDENTIFIER>
+        // technically i should also allow grouped identifier/unation as left part (e.g.: `(foo).bar` or `(foo[bar]).baz` but it's completely useless to write that and it's hard to parse/formalize in grammar)
+*/
+
+---
+
+BINATION := ADDITION | SUBSTRACTION | MULTIPLICATION | DIVISION
+        | IS-EQ | IS-NE | IS-LT | IS-LE | IS-GT | IS-GE
+        | LOGICAL-AND | LOGICAL-OR
+        | BITWISE-LEFT-SHIFT | BITWISE-RIGHT-SHIFT
+        | BITWISE-AND | BITWISE-XOR | BITWISE-OR
+
+ADDITION := Term<EXPRESSION, Atom<`+`>, EXPRESSION>
+SUBSTRACTION := Term<EXPRESSION, Atom<`-`>, EXPRESSION>
+MULTIPLICATION := Term<EXPRESSION, Atom<`*`>, EXPRESSION>
+DIVISION := Term<EXPRESSION, Atom<`/`>, EXPRESSION>
+
+IS-EQ := Term<EXPRESSION, Atom<`==`>, EXPRESSION>
+IS-NE := Term<EXPRESSION, Atom<`!=`>, EXPRESSION>
+IS-LT := Term<EXPRESSION, Atom<`<`>, EXPRESSION>
+IS-LE := Term<EXPRESSION, Atom<`<=`>, EXPRESSION>
+IS-GT := Term<EXPRESSION, Atom<`>`>, EXPRESSION>
+IS-GE := Term<EXPRESSION, Atom<`>=`>, EXPRESSION>
+
+LOGICAL-AND := Term<EXPRESSION, Atom<`&&`>, EXPRESSION>
+LOGICAL-OR := Term<EXPRESSION, Atom<`||`>, EXPRESSION>
+
+BITWISE-LEFT-SHIFT := Term<EXPRESSION, Atom<`<<`>, EXPRESSION>
+BITWISE-RIGHT-SHIFT := Term<EXPRESSION, Atom<`>>`>, EXPRESSION>
+
+BITWISE-AND := Term<EXPRESSION, Atom<`&`>, EXPRESSION>
+BITWISE-XOR := Term<EXPRESSION, Atom<`^`>, EXPRESSION>
+BITWISE-OR := Term<EXPRESSION, Atom<`|`>, EXPRESSION>
+
+---
+
+TERNATION := Term<SquareBracketsTerm<EXPRESSION>, EXPRESSION, Atom<`||`>, EXPRESSION>
+
+===
+
+let Bool::true Bool(1)
+let Bool::false Bool(0)
+let Char::a Char(97)
+let Char::Z Char(90)
+let Char::LF Char(10)
+let Char::SPACE Char(32)
+
+Float(1/3)
+Float(0.(3))
+
+use Bool::true // <=> let true Bool::true
+use Bool::false // ...
+use Char::SPACE
+use Char::TAB
+use Char::LF

@@ -1,0 +1,45 @@
+PROGRAM := (PROGRAM-SENTENCE NEWLINE)*
+
+PROGRAM-SENTENCE = TERM
+
+PROGRAM-WORD = WORD
+
+---
+
+TERM := WORD (SPACE WORD)*
+
+---
+
+WORD :=  ASSOCIATION | PATH
+        | POSTFIX-PARENTHESES-GROUP | POSTFIX-SQUARE-BRACKETS-GROUP
+        | CURLY-BRACKETS-GROUP | PARENTHESES-GROUP | SQUARE-BRACKETS-GROUP
+        | SQUARE-BRACKETS-TERM | QUOTATION
+        | ATOM
+// note: ATOM takes all character until hitting one reserved by one of the word above
+
+---
+
+ASSOCIATION := {WORD - ASSOCIATION} ':' WORD
+
+PATH := {WORD - ASSOCIATION} '.' ATOM
+
+POSTFIX-PARENTHESES-GROUP := {WORD - ASSOCIATION} PARENTHESES-GROUP
+
+POSTFIX-SQUARE-BRACKETS-GROUP := {WORD - ASSOCIATION} SQUARE-BRACKETS-GROUP '?'?
+
+CURLY-BRACKETS-GROUP := '{' TERM? | ((NEWLINE <TAB(S)+1> PROGRAM-SENTENCE?)+ NEWLINE <TAB(S)>) '}'
+// note: <TAB(S)> is a as many TAB as nested levels (starting from 0, 1, ..)
+
+PARENTHESES-GROUP := '(' (TERM (',' SPACE TERM)*)? ')'
+
+SQUARE-BRACKETS-GROUP := '[' NO-SPACE-NO-COLON (TERM (',' SPACE TERM)*)? ']'
+
+SQUARE-BRACKETS-TERM := '[' SPACE TERM SPACE ']'
+
+QUOTATION := ('"' QUOTED-LINE? '"') | ('```' QUOTED-FORMAT? (NEWLINE <TAB(S)+1> QUOTED-LINE?)+ NEWLINE <TAB(S)> '```')
+// note: should be /(?!\)"/ rather than /"/, otherwise escaped double quote can be misinterpreted
+// note2: <TAB(S)> is a as many TAB as nested levels (starting from 0, 1, ..)
+
+====================================================================================
+
+comments ?
