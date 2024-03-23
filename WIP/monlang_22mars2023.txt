@@ -1,0 +1,59 @@
+﻿struct Cache {
+    Map data
+    Lambda process
+}
+
+let Cache::get (cache, in):{
+    unless [ cache.data |> has-key(in) ] {
+        cache.data[in] = cache.process(in)
+    }
+    cache.data[in]
+}
+
+type MyMap Map<Int, Str>
+
+let my-cache {
+    let data MyMap(1:"one", 2:"two")
+    let process (i):{"fds"}
+    Cache(data, process)
+}
+
+let cget(in) Cache::get(my-cache, in)
+
+var res1 cget(1) // "one"
+var res5 cget(5) // "fds"
+
+
+
+------------------------------------
+
+ctor struct type (or ctor alias to struct type) <> ctor fundamental type (or ctor alias to funadamental type)
+
+struct Test1 {
+    Map map
+}
+Test1(["a":"b", "c":"d"])
+
+type Test2 Map
+Test2("a":"b", "c":"d")
+
+------------------------------------
+
+single-line comment: // ...
+paragraph/inline comment: /* ... */
+side-note comment: -- ...
+
+{direct-assignment statement/compound-assignment operators} with equal symbol
+:=
++=
+-=
+*=
+/=
+%=
+
+
+test operators with equal symbol
+==
+!= or <>
+<=
+>=
