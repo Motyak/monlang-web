@@ -1,0 +1,222 @@
+project/
+  -> script.ml
+  -> styles/
+    -> code-editor/
+      -> config.ml
+      -> lien symbolique `fonts` => `../../font-packs/notepad-libreoffice/`
+    -> ...
+  -> font-packs
+    -> notepad-libreoffice/
+      -> lien symbolique `monospace.ttf` => `../../fonts/Consolas.ttf`
+      -> lien symbolique `sans-serif.ttf` => `../../fonts/Liberation_Sans.ttf`
+    -> ...
+  -> fonts/
+    -> Consolas.ttf
+    -> Liberation_Sans.ttf
+    -> ...
+
+
+=========================================================
+script.ml:
+---------------------------------------------------------
+type Properties Map<Str, Str>
+
+struct CssClass {
+    Str name
+    Properties props
+}
+
+let CssClass::println (class):{
+    let str ""
+    str += ".${class.name} {\n"
+    foreach class.props<K, V> {
+        let prop-name $K
+        let prop-val $V
+        str += "    ${prop-name}: ${prop-val};\n"
+    }
+    str += "}\n"
+    println(str)
+    ;
+}
+
+enum FontFamilyEnum {
+    MONOSPACE = "monospace"
+    SANS-SERIF = "sans-serif"
+}
+
+enum FontWeightEnum {
+    THIN = 100
+    LIGHT = 300
+    REGULAR = 400
+    MEDIUM = 500
+    BOLD = 700
+}
+
+enum FontStyleEnum {
+    ROMAN = "roman"
+    ITALIC = "italic"
+}
+
+struct Color {
+    fields {
+        Int r
+        Int g
+        Int b
+    }
+
+    invariants {
+        foreach [this.r, this.g, this.b] {
+            [ $cur >= 0 && $cur <= 255 ]
+        }
+    }
+}
+
+enum ColorEnum {
+    BLACK = Color(0, 0, 0)
+    WHITE = Color(255, 255, 255)
+}
+
+let BACKGROUND-COLOR ColorEnum::WHITE
+
+let Color::merge (colors...):{
+    [ len(colors) >= 1 ] || err("wrong nb of args")
+
+    let do-it(colors...):{
+        ...
+    }
+    
+    if [ len(colors) == 1 ] {
+        return do-it(&colors[#1], BACKGROUND-COLOR)
+    }
+    do-it(&colors[#1], *colors[#2..=])
+}
+
+let Color::toHex (color):{
+    var res "#"
+    foreach [color.r, color.g, color.b] {
+        ...
+    }
+    res
+}
+
+let read-property (OUT props, line):{
+    let LINE Str::upper(line)
+    if [ LINE in FontFamilyEnum::enumerates() ] {
+        let font-family FontFamilyEnum[LINE]
+        let font-path Path::from("styles", STYLE-NAME, "fonts", "${font-family}.ttf")
+        let font-name font-path |> File::resolve-symlink() |> Path::basename()
+        props["font-family"] := "${font-name}, ${font-family}"
+    }
+    elsif [ LINE in FontWeightEnum::enumerates() ] {
+        props["font-weight"] := FontWeightEnum[LINE]
+    }
+    elsif [ LINE in FontStyleEnum::enumerates() ] {
+        props["font-style"] := FontStyleEnum[LINE]
+    }
+    elsif [ LINE in ColorEnum::enumerates() ] {
+        props["color"] := ColorEnum[LINE] |> Color::toHex()
+    }
+    else {
+        Log.err("Couldn't read the following property: `${line}`")
+    }
+}
+
+[ len($args) == 1 ] || err("wrong nb of args passed to script")
+let STYLE-NAME $arg[#1]
+
+let style-file Path::from("styles", STYLE-NAME, "config.ml")
+[ File::is-existing(style-file) ] || err("File doesn't exist: `${style-file}`")
+let config-ml read-file-content(style-file)
+var config Ast::parse(config-ml)
+
+let default-class {
+    var props [:]
+    foreach config["default"] |> Str::split() {
+        read-property(&props, $cur)
+    }
+    CssClass("default", props)
+}
+
+var other-classes []
+let other-keys Map::keys(config) |> Set() - Set("default")
+foreach other-keys {
+    let name $cur
+    let transformation config[name]
+    var new-class transformation(default)
+    new-class.name = name
+    other-classes += new-class
+}
+
+var res [default-class, *other-classes]
+foreach res {
+    CssClass::println($cur)
+}
+
+=========================================================
+
+=========================================================
+code-editor.conf:
+---------------------------------------------------------
+/*
+This is a config file written in monlang LV1
+*/
+
+default:```
+    monospace
+    regular
+    roman
+    black
+```
+
+important:(default):{
+    var important default
+    let fw 'important.props["font-weight"]
+    fw := fw + fw * 0.75
+    important
+}
+
+quoted:(default):{
+    var quoted default
+    quoted.props["font-style"] := "italic"
+    quoted
+}
+
+comment:(default):{
+    var comment default
+    comment.props["font-family"] := "sans-serif"
+    let fw 'comment.props["font-weight"]
+    fw := fw - fw * 0.75
+    Color::merge(&comment.props["color"])
+    comment
+}
+
+=========================================================
+
+
+.default {
+    font-family: Consolas, monospace;
+    font-weight: 400;
+    font-style: normal;
+    color: #000000;
+}
+
+.important {
+    font-family: Consolas, monospace;
+    font-weight: 700;
+    font-style: normal;
+    color: #000000;
+}
+
+.quoted {
+    font-family: Consolas, monospace;
+    font-weight: 400;
+    font-style: italic;
+    color: #000000;
+}
+
+.comment {
+    font-family: "Liberation Sans", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+    color: #7F7F7F;
+}
