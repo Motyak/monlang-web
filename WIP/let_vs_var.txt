@@ -1,0 +1,87 @@
+{
+    var x []
+    var y x -- bind to the name `y` a newly created object copy of `x`
+    y += 3
+    print(x) -- []
+}
+
+{
+    var x []
+    let y x -- bind to the name `y` a reference to object `x`
+    y += 3
+    print(x) -- [3]
+}
+
+// `new-symbol-name` becomes a lvalue
+let <identifier new-symbol-name> <lvalue>
+// `new-symbol-name` becomes a rvalue
+let <identifier new-symbol-name> <rvalue>
+
+```
+let x 15
+print(x) -- 15
+```
+
+is the syntactic sugar for
+
+```
+var x ():{15}
+print(x()) -- 15
+```
+
+---
+
+```
+var x []
+let y {x}
+y += 3 -- ERR: cannot assign to expr (rvalue)
+```
+
+is the syntactic sugar for
+
+```
+var x []
+var y ():{x}
+y() += 3 -- ERR: cannot assign to expr (rvalue)
+```
+
+---
+
+```
+var x []
+let y {x}
+x += 3
+print(y) -- [3]
+```
+
+is the syntactic sugar for
+
+```
+var x []
+var y ():{
+    -- you could have done stuff here
+    x
+} -- captures var x by const ref
+x += 3
+print(y()) -- [3]
+```
+
+---
+
+```
+var x []
+let y {'(x)} -- evaluate x value before assigning the delayed block
+x += 3
+print(y) -- []
+```
+
+is the syntactic sugar for
+
+```
+var x []
+var y ():{
+    []
+}
+x += 3
+print(y()) -- []
+```

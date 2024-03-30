@@ -1,0 +1,31 @@
+Plutôt que de faire:
+```
+{
+    var x []
+    var y x -- bound to the name `y` a newly created object copy of `x`
+    y += 3
+    print(x) -- []
+}
+
+{
+    var x []
+    let y x -- bound to the name `y` a reference to object `x`
+    y += 3
+    print(x) -- [3]
+}
+```
+
+On pourrait faire:
+```
+var x []
+var y x -- bound to the name `y` a newly created object copy of `x`
+y += 3
+print(x) -- []
+
+---
+
+var x []
+let y x -- bound to the name `y` a reference to object `x`
+y += 3
+print(x) -- [3]
+```

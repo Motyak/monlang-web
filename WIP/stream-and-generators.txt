@@ -1,0 +1,52 @@
+
+stream in python:
+```
+    def naturals():
+        def gen():
+            num = 0
+            while True:
+                yield num
+                num += 1
+        return gen() # creates a new stream and return it
+```
+
+equivalent in monlang, without `yield` keyword:
+```
+    var naturals {
+        var _num 0 -- state variable
+        let next ():{
+            if [ _num == 0 ] {
+                return 0
+            }
+            _num += 1
+            _num
+        }
+        Stream(next) -- we wrap it in a Stream marker ctor otherwise we wouldn't be able to iterate over it
+    }
+```
+
+---
+
+generator in python:
+```
+    def naturals():
+        num = 0
+        while True:
+            yield num
+            num += 1
+```
+
+equivalent in monlang:
+```
+    let naturals ():{
+        var _num 0 -- state variable
+        let next ():{
+            if [ _num == 0 ] {
+                return 0
+            }
+            _num += 1
+            _num
+        }
+        Stream(next)
+    }
+```
