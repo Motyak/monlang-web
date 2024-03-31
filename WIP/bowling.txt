@@ -1,3 +1,5 @@
+namespace global
+
 type Uint {
     is Int
     invariants {
@@ -10,68 +12,77 @@ namespace Bowling
 let NB-OF-PINS 10
 let TRIES-PER-FRAME 2
 let NB-OF-FRAMES 10
+/*
+Faire une matrice des gains qui associe à chaque outcome..
+.. une fonction qui prend en paramètre tries et successor..
+.. et qui retourne le score
+*/
 
-type TryNb {
-    is Int
+type Try {
+    is Uint
     invariants {
-        [ this in 1..=TRIES-PER-FRAME ]
+        [ this <= NB-OF-PINS ]
     }
 }
 
 enum FrameEnum {
     enumerates {
-        uninitialized = ""
-        INCOMPLETE = "Incomplete"
-        SPARE = "Spare"
-        STRIKE = "Strike"
-    }
-}
-
-type FrameNb {
-    is Int
-    invariants {
-        [ this in 1..=NB-OF-FRAMES ]
+        IN-PROGRESS = 0
+        OPEN = 1
+        SPARE = 2
+        STRIKE = 3
     }
 }
 
 struct Frame {
     fields {
-        Map<TryNb, Uint> knocked-out-pins
-        Uint score
+        List<Try> tries
         FrameEnum outcome
+        Frame? successor
+        Uint score
     }
 
     invariants {
-        var sum 0
-        foreach knocked-out-pins<V> {
-            sum += $V
+        [ len(tries) <= TRIES-PER-FRAME ]
+
+        var bonus-pts 0
+        {
+            let successor-1st-try successor?.tries[#1]? ?? 0
+            let successor-2nd-try successor?.tries[#2]? ?? 0
+
+            [ outcome >= FrameEnum::SPARE ]
+            bonus-pts += successor-1st-try
+            [ outcome == FrameEnum::STRIKE ]
+            bonus-pts += successor-2nd-try
         }
-        [ sum <= NB-OF-PINS ]
+        [ score == sum(tries) + bonus-pts ]
     }
 }
 
 struct Game {
     fields {
-        Map<FrameNb, Frame> frame
+        List<Frame> frames
         Uint total-score
     }
 
     invariants {
+        [ len(frames) <= NB-OF-FRAMES ]
+        
         var sum 0
-        foreach frame<V> {
-            sum += 1
+        foreach frames {
+            sum += $cur.score
         }
-        [ sum <= NB-OF-FRAMES ]
+        [ total-score == sum ]
     }
 }
 
 let NEW-GAME {
-    let frame [:]
+    let frames []
     let total-score 0
-    Game(frame, total-score)
+    Game(frames, total-score)
 }
 
-namespace global // end of Bowling
+namespace main -- end of Bowling
 
 let input-scores ```
     10
@@ -88,74 +99,130 @@ let input-scores ```
     9
 ```
 
-// TODO: hardcoded for the moment (reads string constant), but should take input from stdin
+/*
+hardcoded for the moment (reads string constant)..
+.. but is supposed to take input from stdin
+*/
 var input-stream {
-    var cur 1 // state variable
+    /* state variables */
+    var _cur 1
+    var _parsed-tokens []
+
     let next ():{
-        let try-consume-nb (str):{
-            var ret ""
-            while [ input-scores[#cur]? =~ /[0-9]/ ] {
-                ret += input-scores[#cur]
-                cur += 1
-            }
-            ret
+        let pop-list (OUT list):{
+            var popped-item list[#1]
+            list := list[#2..=]
+            return popped-item
         }
 
-        let try-consume-spaces (str):{
-            var ret ""
-            while [ input-scores[#cur]? in [' ', '\t'] ] {
-                ret = " "
+        let consume-line ():{
+            var line ""
+            until [ input-scores[#cur]? =~ /\n/ ] {
+                line += input-scores[#cur]
                 cur += 1
             }
-            ret
+            cur += 1 -- consume the newline character
+            line
         }
 
-        let try-consume-newline (str):{
-            var ret ""
-            if [ input-scores[#cur]? == '\n' ] {
-                ret = "\n"
-                cur += 1
-            }
-            ret
+        let parse-line (line):{
+            _parsed-tokens += line |> split(/\s+/)
         }
 
-        var curr-token _
-        curr-token = try-consume-nb(input-scores)
-        [ curr-token == "" ] || return Str?(curr-token)
+        if [ len(_parsed-tokens) != 0 ] {
+            return pop-list(&_parsed-tokens)
+        }
 
-        curr-token = try-consume-spaces(input-scores)
-        [ curr-token == "" ] || return Str?(curr-token)
+        let eof cur > len(input-scores)
+        if [ eof ] {
+            return Stream::END
+        }
 
-        curr-token = try-consume-newline(input-scores)
-        [ curr-token == "" ] Str?() || return Str?(curr-token)
+        consume-line() |> parse-line()
     }
-    next
+    Stream(next)
 }
 
 // returns a stream of the game in progress
 let play-game (OUT input-stream):{
     let is-over (game):{
-        let tenth-frame FrameNb(10)
-        [ game.frame |> has-key(tenth-frame) ] || return false
-        game.frame[tenth-frame].outcome != FrameEnum::uninitialized
+        [ len(game.frames) >= Bowling::NB-OF-FRAMES ] || return false
+        if [ game.frames[#10].outcome == FrameEnum::STRIKE ] {
+            return game.frames[#12]?.outcome >= FrameEnum::OPEN
+        }
+        if [ game.frames[#10].outcome == FrameEnum::SPARE ] {
+            return game.frames[#11]?.outcome >= FrameEnum::OPEN
+        }
+        game.frames[#10].outcome == FrameEnum::OPEN
     }
 
     /* state variables */
-    var game Bowling::NEW-GAME
-    var curr-frame-nb 1
-    var remaining-pins Bowling::NB-OF-PINS
+    var _game Bowling::NEW-GAME
+    var _curr-frame-nb 1
+    var _remaining-pins Bowling::NB-OF-PINS
+    var _is-first-call true
 
     let progress ():{
-        {
-            [ game |> is-over() ]
-            return Game?()
+        if [ _is-first-call ] {
+            _is-first-call := false
+            return _game -- initial state of the game
         }
 
-        var curr-move next(&input-stream)
-        [ some(curr-move) ] || err("Game has finished prematurely")
+        if [ _game |> is-over() ] {
+            return Stream::END
+        }
 
-        /* update current game */
+        var first-try next(&input-stream) |> Int::fromStr() |> Try()
+        [ some(curr-try) ] || err("Game has finished prematurely")
 
+        if [ first-try == Bowling::NB-OF-PINS ] {
+            let score Bowling::NB-OF-PINS
+            trx {
+                _game.frames += {
+                    let tries [Bowling::NB-OF-PINS]
+                    let outcome FrameEnum::STRIKE
+                    let successor Frame?()
+                    Frame(tries, outcome, successor, score)
+                }
+                _game.total-score += score
+            }
+            return _game
+        }
+        
+        var second-try next(&input-stream) |> Int::fromStr() |> Try()
+        [ some(curr-try) ] || err("Game has finished prematurely")
+
+        if [ first-try + second-try == Bowling::NB-OF-PINS ] {
+            let score Bowling::NB-OF-PINS
+            trx {
+                _game.frames += {
+                    let tries [first-try, second-try]
+                    let outcome FrameEnum::SPARE
+                    let successor Frame?()
+                    Frame(tries, outcome, successor, score)
+                }
+                _game.total-score += score
+            }
+            return _game
+        }
+
+        let score first-try + second-try
+        trx {
+            _game.frames += {
+                let tries [first-try, second-try]
+                let outcome FrameEnum::OPEN
+                let successor Frame?()
+                Frame(tries, outcome, successor, score)
+            }
+            _game.total-score += score
+        }
+        _game
     }
-    progress
+    Stream(progress)
+}
+
+/* play until end of one game or end of input stream */
+foreach input-stream |> play-game() {
+    let game-in-progress $cur
+    // TODO: print current state of the game
 }
