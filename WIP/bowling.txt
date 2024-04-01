@@ -144,7 +144,7 @@ var input-stream {
 }
 
 // returns a stream of the game in progress
-let play-game (OUT input-stream):{
+let start-game (OUT input-stream):{
     let is-over (game):{
         [ len(game.frames) >= Bowling::NB-OF-FRAMES ] || return false
         if [ game.frames[#10].outcome == FrameEnum::STRIKE ] {
@@ -222,7 +222,10 @@ let play-game (OUT input-stream):{
 }
 
 /* play until end of one game or end of input stream */
-foreach input-stream |> play-game() {
-    let game-in-progress $cur
-    // TODO: print current state of the game
+var chrono-start Time::now()
+let game-in-progress input-stream |> start-game()
+foreach game-in-progress {
+    -- TODO: print current state of the game
+    // this will guarantee at least 1sec of screen time for each game state
+    &chrono-start |> Time::remaining(1.000'000_sec) |> Thread::sleep()
 }
