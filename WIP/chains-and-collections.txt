@@ -52,8 +52,8 @@ list[#2..=4] // sub-list: from #2 to #4 included
 list[#2..<4] // sub-list: from #2 to #4 excluded
 list[#4..=2] // sub-list: from #4 down to 2 included
 list[#4..<2] // sub-list: from #4 down to 2 excluded
-list[#2..=] // sub-list: from #2 up until the end (last element included)
-list[#2..<] // sub-list: from #2 up until the end (last element excluded)
+list[#2..=-1] // sub-list: from #2 up until the end (last element included)
+list[#2..<-1] // sub-list: from #2 up until the end (last element excluded)
 list[#5..=1] // sub-list: from #5 down until the beginning (first element included)
 list[#5..<1] // sub-list: from #5 down until the beginning (first element excluded)
 list[#-1..<2] // sub-list: from last element down to #2 excluded
