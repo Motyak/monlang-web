@@ -1,0 +1,3 @@
+
+`if ((a && b) || (c && d)) {...}` => `if [ a and b OR c and d ] {...}`
+`while (!a && !b)` => `until [ a or b ]`
