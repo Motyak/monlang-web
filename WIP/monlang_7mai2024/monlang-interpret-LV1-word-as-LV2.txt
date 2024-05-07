@@ -1,0 +1,57 @@
+reduce (right to left):
+
+=== Atom ===
+LITERAL-INT := Atom<(0(x|b|o))?[0-9]('?[0-9])*(_[a-z]+)?>
+LITERAL-FRACTION := Atom<[0-9]+/[0-9]+>
+EMPTY-MAP := Atom<[:]>
+KEYWORD-LET := Atom<let>
+KEYWORD-VAR := Atom<var>
+KEYWORD-FOREACH := Atom<foreach>
+KEYWORD-WHILE := Atom<while>
+KEYWORD-DO := Atom<do>
+KEYWORD-IF := Atom<if>
+KEYWORD-ELSIF := Atom<elsif>
+KEYWORD-ELSE := Atom<else>
+OPERATOR-ADD := Atom<+>
+OPERATOR-SUB := Atom<->
+OPERATOR-MUL := Atom<*>
+OPERATOR-DIV := Atom</>
+OPERATOR-IS-EQ := Atom<==>
+OPERATOR-IS-NE := Atom<!=>
+OPERATOR-IS-LT := Atom<`<`>
+OPERATOR-IS-LE := Atom<`<=`>
+OPERATOR-IS-GT := Atom<`>`>
+OPERATOR-IS-GE := Atom<`>=`>
+OPERATOR-LOGICAL-AND := Atom<&&>
+OPERATOR-LOGICAL-OR := Atom<||>
+IDENTIFIER // any other Atom
+
+=== Quotation ===
+LITERAL-STRING := Quotation<.*>
+
+=== SquareBracketsTerm ===
+;
+
+=== SquareBracketsGroup ===
+LIST := SquareBracketsGroup<EXPRESSION*>
+MAP := SquareBracketsGroup<Association<EXPRESSION, EXPRESSION>+>
+
+=== ParenthesesGroup ===
+EXPRESSION := ParenthesesGroup<EXPRESSION>
+
+=== CurlyBracketsGroup ===
+;
+
+=== PostfixSquareBracketsGroup ===
+SUBSCRIPT := PostfixSquareBracketsGroup<EXPRESSION, SquareBracketsGroup<EXPRESSION>>
+
+=== PostfixParenthesesGroup ===
+LITERAL-DECIMAL := PostfixParenthesesGroup<Path<Atom<[0-9]+>, Atom<[0-9]+>>, ParenthesesGroup<Atom<[0-9]+>>>
+FUNCTION-CALL := PostfixParenthesesGroup<EXPRESSION, ParenthesesGroup<EXPRESSION*>>
+
+=== Path ===
+LITERAL-DECIMAL := Path<Atom<[0-9]+>, Atom<[0-9]+>>
+FIELD-ACCESS := Path<EXPRESSION, IDENTIFIER>
+
+=== Association ===
+LAMBDA := Association<ParenthesesGroup<IDENTIFIER*>, CurlyBracketsGroup<STATEMENT*>>
