@@ -1,0 +1,20 @@
+Pouvoir définir de nouveaux opérateurs:
+
+let 'in (lhs, rhs):{
+    var ret Bool::false
+    foreach rhs {
+        [ $cur == lhs ]
+        ret := Bool::true
+        break
+    }
+    ret
+}
+
+let '!in (lhs, rhs):{
+    false == 'in(lhs, rhs)
+}
+
+2 in [1, 2, 3] -- true
+'in(2, [1, 2, 3]) -- true
+2 !in [1, 2, 3] -- false
+'+(1, 2, 3, 4) -- 10
