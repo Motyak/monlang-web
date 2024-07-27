@@ -1,0 +1,15 @@
+Build a language that allows developers to write code in a robust way, as demonstrated in SICP and Grokking Simplicity: functional programming (stratified design, etc..).
+This will be a framework for them to design their own "languages" (same mission as LisP).
+A simple syntax to build complex systems (closure property).
+Function as primary tools to achieve composability.
+
+
+
+Add an extension on top of this to call system calls from the OS (e.g. UNIX) so that they can perform actual, "real world",  computer work (rather than mere calculations on strings and numbers)
+  -> advanced programming in UNIX system
+  -> TCP/IP
+
+---
+
+
+

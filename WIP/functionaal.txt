@@ -1,0 +1,87 @@
+numbers, strings, bytes,
+list<T>,
+map<K,V>
+
+we could represent numbers as strings, and strings as bytes
+or
+we could represent numbers as bytes
+
+we could represent strings as bytes
+
+we could codify bytes as strings
+
+---
+
+split("/", "a/b/c")
+  => ["a", "b", "c"]
+  
+join(",", ["a", "b", "c"])
+  => "a,b,c"
+
+
+let mapper (x):{x |> UInt() |> neg()}
+map(mapper, [0, -1, "2", 3.9])
+  => [0, -1, -2, -3]
+let mymap(x) map(mapper, x) -- function binding/"currying"
+[0, -1, "2", 3.9] |> mymap()
+  => [0, -1, -2, -3]   (same result)
+
+let reducer (a, b):{a + b}
+reduce(reducer, "T", "ommy")
+  => "Tommy"
+reduce(reducer, 0, [1, 2, 3])
+  => 6
+
+let filterer (x):{Bool(x)}
+filter(filterer, ["a", "", "true", "false"]
+  => ["a", "true", "false"]   (an empty Str is 'falsy-convertable')
+
+---
+
+type functions, when used in a lambda body or in a block, perform a type conversion.
+However, when used in a lambda parameters, they perform a type CHECK.
+
+{
+    let fn (x):{Int(x)}
+    fn(91) -- 91
+    fn("91") -- 91
+}
+
+{
+    let fn (Int(x)):{x}
+    fn(91) -- 91
+    fn("91") -- ERR: wrong type
+}
+
+---
+
+You are allowed to define a new variable inside a lambda's body with the same name as one of its parameters, the new variable will override the parameters value and type.
+
+let display (Str?(name)):{
+    var name unwrap_or_default(cart, "") -- from now on 'name' is a Str value, no longer a `Str?`
+    print(name) -- will print a Str no matter what
+}
+
+---
+
+All types have implicit cast from T to Either<T, ...> (and the other way around), so that you can restrict parameters to a subset of types rather than a "single one" (though Either<T...> actually IS a single type).
+
+{
+    let display {
+        let T Either<Int,Str>
+        (T(x)):{print(x)}
+    }
+    display(13) -- 13
+    display("13") -- 13
+    display(13.37) -- ERR: wrong type
+}
+
+---
+
+
+
+
+
+
+
+
