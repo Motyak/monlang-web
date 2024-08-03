@@ -1,0 +1,21 @@
+/* simplest functions */
+
+// modify input value
+(T(in)) -> T(out)
+
+// same as above except we take the input by reference
+(OUT in) -> ;
+
+// transform input from one type to another
+(T(in)) -> U(out)
+
+---
+
+/* take implicit parameters OR are integration functions (interact with the real world) */
+
+// uses global variables as output OR calls system I/O functions
+(in) -> ;
+
+// are pure process function OR use global variables as input OR call system I/O functions
+() -> out
+

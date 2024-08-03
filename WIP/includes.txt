@@ -1,0 +1,46 @@
+// Person.ml
+{
+    let Person ():{"<unknown>,<unknown>"}
+
+    package Person // end of global
+    
+    let name (OUT person, Str(name)):{
+        [ person is Str ] || die
+        
+        let age {person |> split(",")}[#2]
+        
+        [name, age] |> join(",")
+    }
+    
+    let age (OUT person, UInt(age)):{
+        [ person is Str ] || die
+        
+        let name {person |> split(",")}[#1]
+        let age Str(age) -- similar to redefining age var as a Str using conversion
+        
+        [name, age] |> join(",")
+    }
+    
+    let introduce (person):{
+	[ person is Str ] || die
+	    
+	let name {person |> split(",")}[#1]
+	let age {person |> split(",")}[#2]
+	
+	print("${name} is ${age} years old.")
+    }
+    
+    // end of Person
+}
+
+// main.ml
+{
+    include "Person.ml"
+    use Person::name
+    use Person::age
+    use Person::introduce
+    
+    let tommy {Person() |> name("Tommy") |> age(27)}
+    introduce(tommy) -- Tommy is 27 years old.
+}
+
