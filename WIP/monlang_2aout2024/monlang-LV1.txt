@@ -14,7 +14,7 @@ WORD :=  ASSOCIATION
         | POSTFIX-PARENTHESES-GROUP | POSTFIX-SQUARE-BRACKETS-GROUP
         | PATH
         | CURLY-BRACKETS-GROUP | PARENTHESES-GROUP | SQUARE-BRACKETS-GROUP
-        | PARENTHESES-TERM | SQUARE-BRACKETS-TERM | QUOTATION
+        | SQUARE-BRACKETS-TERM | QUOTATION
         | ATOM-QUOTE* | ATOM
 // note: ATOM takes all character until hitting one reserved by one of the word above
 
