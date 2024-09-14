@@ -1,0 +1,104 @@
+Spec de monlang:
+
+- Le moyen principal de composition sont les fonctions à haut niveau, et les opérateurs à bas niveau (fournis par le langage, pour opérer sur des types primitifs/fondamentaux/natifs)
+
+- let vs var
+
+- [ 1 < x < 3 ] || "x between 1 and 3"
+
+15 +/ 3 == 15 + 15/3 == 20
+30 -/ 3 == 30 - 30/3 == 20
+
+[1, 2, 3] + 4 -- [1, 2, 3, 4]
+[1, 2, 3] + [4, 5] -- [1, 2, 3, [4, 5]]
+[1, 2, 3] ++ [4, 5] -- [1, 2, 3, 4, 5]
+
+- Les groupes comme en Python
+  -> la création on the fly: [a, b, c]
+  -> la sélection à partir d'un indice: liste[#1]
+..mieux que Lisp-like (a:b:c), (car (cdr '(1 2 3)))
+
+- On veut des multi-line strings et des single-line string avec des double quotes (\n pour un retour ligne, \" pour une double quote, \\ pour l'anti-slash). '\' is a metacharacters for escape characters of the form \x where x is any character, it results in x. It allows us to write metacharacters (such as `"`, `$` after a '<' or '<' before a '$') literally. It is itself a metacharacter that you can escape.
+  -> string interpolation as "<$var>"
+
+- On veut des maps comme type natif, avec une syntaxe à la Groovy
+  -> [key1:val1, key2:val2]
+  
+- On veut définir des types dérivés des types natifs en appliquant des contraintes supplémentaires à ceux-ci (inverse de l'héritage, ici spécialisation)
+
+---
+
+a is b
+  -> a est un dérivé de b (b avec des contraintes supplémentaires)
+a qualifies as b
+  -> a n'est rien de plus spécifique que b
+  
+The hierarchy starts from the most complex/complete feature,..
+..and derivatives are clones with additional constraints.
+e.g.: A text file derivates from a binary file (or just file).
+    
+Examples:
+
+  - An ELF file is a binary file
+  - An ELF file also qualifies as a binary file
+  
+  - A CSV file is a binary file
+  - A CSV file DOESN'T qualifies as a binary file
+  - ..rather, a CSV file qualifies as a text file
+    (if "csv file" was a defined type, it would qualifies as that)
+
+---
+
+
+let square (x):{x * x}
+
+var x square(4)
+  -> ((x):{x * x})(4)
+    -> {4 * 4}
+      -> 16
+
+let y square(4)
+  -> (){4 * 4}
+     (calling y automatically calls y())
+
+---
+
+var square (x):{x * x}
+
+var x square(4)
+  -> ((x):{x * x})(4)
+    -> {4 * 4}
+      -> 16
+
+let y square(4)
+  -> (){square(4)}
+     (calling y automatically calls y())
+
+print(y) -- 16
+square := (_whatever):{"square"}
+print(y) -- now prints 'square'
+
+---
+
+let home {Sys::getenv("HOME")}
+
+"a<$TAB>b<$LF>c"
+"\"a<\$TAB>b<\$LF>c\""
+"\\\"a<\\$TAB>b<\\$LF>c\\\""
+
+/*! NOT ACTUAL IMPLEMENTATION
+let len (list):{
+    var res 0
+    foreach list {
+        res += 1
+    }
+    res
+}
+*/
+
+let line (str):{
+    [ len(str) > 0 ] || return LF
+    [ str[-1] != LF ] || return str
+    str + LF
+}
+
