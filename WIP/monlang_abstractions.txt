@@ -1,0 +1,5 @@
+- recursion over explicit stack
+- loops over gotos (also, prefer loops over recursive functions aka lisp-like)
+- named procedures over commented block of code
+  -> functions for parametrability and therefore reusability
+

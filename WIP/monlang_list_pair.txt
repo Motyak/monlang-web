@@ -1,0 +1,109 @@
+
+--- Pair.ml
+
+package global
+
+let Pair (left, right):{
+    (selector):{selector(left, right)}
+}
+
+package Pair
+
+let left-part (pair):{
+    let left-selector (left, right):{left}
+    pair(left-selector)
+}
+
+let right-part (pair):{
+    let right-selector (left, right):{right}
+    pair(right-selector)
+}
+
+package main
+
+use Pair::left-part
+use Pair::right-part
+
+var pair Pair(1, 2) -- (selector):{selector(1, 2)}
+var left left-part(pair) -- ((selector):{selector(1, 2)})((left, right):{left})
+                         -- {((left, right):{left})(1, 2)}
+                         -- {1}
+var right right-part(pair) -- ((selector):{selector(1, 2)})((left, right):{right})
+                           -- {((left, right):{right})(1, 2)}
+                           -- {2}
+
+--- List.ml
+
+package global
+
+include "Pair.ml"
+
+let List (elems...):{
+    var res 'nil
+    foreach elems {
+        res := Pair($1, res)
+    }
+    res
+}
+
+package List
+
+use Pair::left-part
+use Pair::right-part
+
+let len (list):{
+    var res 0
+    foreach list {
+        res := res + 1
+    }
+    res
+}
+
+let get (list, nth):{
+    [ 1 <= nth <= len(list) ] || return 'nil
+
+    var res _
+    var i 1
+
+    let is-odd (n):{n % 2 != 0}
+    let nth-accessible ():{i >= nth - 1}
+    let advance-list ():{
+        res := right-part(list)
+        i := i + 2
+    }
+    
+    until [ nth-accessible() ] {
+        advance-list()
+    }
+    
+    if [ is-odd(nth) ] {
+        res := left-part(list)
+    }
+    else /* if even */ {
+        res := right-part(list)
+    }
+    
+    res
+}
+
+package main
+
+use List::len
+use List::get
+
+{
+    var list List(3, 141, 59, 26)
+    var length len(list) -- 4
+    var first get(list, 1) -- 3
+    var last get(list, 4) -- 26
+}
+
+{
+    var empty-list List()
+    var length len(empty-list) -- 0
+    var first get(empty-list, 1) -- nil
+}
+
+---
+
+
