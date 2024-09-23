@@ -1,0 +1,25 @@
+
+=== COMPARISON OPERATORS ===
+
+1 <  1 --+------------+
+         |-- 1 <= 1   |
+1 == 1 --+            |-- 1 <> 1
+         |-- 1 >= 1   |
+1 >  1 --+------------+
+
+=== LOGICAL OPERATORS ===
+
+not NOT
+and AND
+or  OR
+
+=== ARITHMETIC OPERATORS ===
+
++
+-
+*
+/
+%
++/ (x + x / y)
+-/ (x - x / y)
+
