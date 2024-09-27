@@ -1,0 +1,84 @@
+/*
+NOTES (à prendre avec pincettes):
+
+Contrairement à monlang LV1 (program/programsentence/programword), ici le but ne va pas être de définir des types différents pour chaque Statement, mais de faire en sorte de pouvoir charger des statements (régles sémantiques basée sur le langage LV1) de manière dynamique. Un statement sera simplement une régle au format string qu'on interprète.
+
+On pourra ajouter des statements de manière additive (ref. SICP, data-directed programming, hash table)
+                                 -------------------
+
+On veut pouvoir changer les régles syntaxiques au runtime (ajouter des statements via du code).
+  ->Les nouveaux statements qui sont de simples syntax-sugar (réécriture) de statements existants peuvent être créé et chargé au runtime. EN REVANCHE, les nouveaux statements qui ont un code custom devront être compilés et linké au compile time de l'interpréteur.
+
+En gros tous les statements seront en mémoire. La fonction main de l'interpréteur va lire chaque ProgramSentence, trouver à quel statement ça match (si aucun ne match => erreur de syntaxe) puis executer le code correspondant (pour poursuivre avec l'analyse sémantique puis execution).
+
+scan() devrait stream une séquence de ProgramSentence, qu'on transforme en Statement par la suite, graduellement.
+
+MayFail<Statement> buildStatement(ProgramSentence)
+  -> ...
+*/
+
+
+
+STATEMENT = ProgramSentence<ASSIGNMENT | USER-DEFINED-STATEMENT | RVALUE>
+
+---
+
+ASSIGNMENT = LVALUE Atom<`:=`> RVALUE // LVALUE will always be exactly one word (and also no whitespace)
+
+RVALUE = COMBINATION | FUNCTION-CALL | LAMBDA | BLOCK | LITERAL | LVALUE | ParenthesesGroup<RVALUE>
+//  -> combination is the only option that require multiple words (an odd number of words)
+
+---
+
+FUNCTION-CALL = PostfixParenthesesGroup<RVALUE, ParenthesesGroup<RVALUE*>>
+
+
+LAMBDA = Association<ParenthesesGroup<IDENTIFIER*>, BLOCK>
+
+
+BLOCK = CurlyBracketsGroup<STATEMENT*>
+
+
+COMBINATION = Term<RVALUE (BINARY-OPERATOR RVALUE)*>
+
+BINARY-OPERATOR = USER-DEFINED-BINARY-OPERATOR
+
+
+LITERAL = Atom<[0-9]+>
+
+
+LVALUE = IDENTIFIER
+
+IDENTIFIER = Atom<.*>
+
+
+=== alternative binary operator (below) ========================================
+
+BINARY-OPERATOR = ARITHMETIC-OPERATOR | COMPARISON-OPERATOR | LOGICAL-OPERATOR
+
+ARITHMETIC-OPERATOR = OPERATOR-ADD | OPERATOR-SUB 
+                    | OPERATOR-MUL | OPERATOR-DIV | OPERATOR-MOD
+
+OPERATOR-ADD = Atom<`+`>
+OPERATOR-SUB = Atom<`-`>
+OPERATOR-MUL = Atom<`*`>
+OPERATOR-DIV = Atom<`/`>
+OPERATOR-MOD = Atom<`%`>
+
+COMPARISON-OPERATOR = OPERATOR-IS-LT | OPERATOR-IS-EQ | OPERATOR-IS-GT 
+                    | OPERATOR-IS-LE | OPERATOR-IS-GE | OPERATOR-IS-NE
+
+OPERATOR-IS-LT = Atom<`<`>
+OPERATOR-IS-EQ = Atom<`==`>
+OPERATOR-IS-GT = Atom<`>`>
+OPERATOR-IS-LE = Atom<`<=`>
+OPERATOR-IS-GE = Atom<`>=`>
+OPERATOR-IS-NE = Atom<`<>`>
+
+LOGICAL-OPERATOR = OPERATOR-NOT | OPERATOR-AND | OPERATOR-OR
+
+OPERATOR-NOT = Atom<`not`>
+OPERATOR-AND = Atom<`and`>
+OPERATOR-OR = Atom<`or`>
+
+
