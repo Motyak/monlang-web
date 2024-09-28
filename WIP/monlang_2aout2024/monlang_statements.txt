@@ -1,0 +1,41 @@
+
+Statement buildStatement(const ProgramSentence&)
+  -> where Statement is either:
+    -> StmtAssignment*
+    -> Stmt_let*
+    -> Stmt_var*
+    -> ...
+    -> CustomStatement* // ? don't know yet how it will work
+    -> StmtRvalue*
+
+void executeStatement(Environment&, const Statement&)
+  -> std::visit on different kind of statement
+
+auto executeMyStatement = [stmt](Environment& env){executeStatement(env, stmt);};
+executeMyStatement(&env);
+
+auto delayed_execution = [env&, stmt](){executeStatement(env, stmt);};
+delayed_execution();
+
+void saveEnvironment(std::string filename, const Environment&)
+void loadEnvironment(std::string filename, Environment&)
+
+---
+
+Ajoute des "custom statements" ça serait juste réécrire l'arbre syntaxique LV1 de telle sorte à build des statements existants.
+
+C'est comme une réécriture du code, pour du syntax-sugar.
+
+En fait t'aurais des extensions qui feront du preprocessing MAIS SUR L'ARBRE, PAS LE TEXTE EN LUI-MÊME
+  -> ajout du ternary operator à partir du if statement
+
+---
+
+Est-ce qu'un Statement ce serait pas plutot une lambda qui prend en paramètre un environnement en entrée/sortie ?
+  -> ca dépend, est-ce qu'on veut mettre la logique / le code du statement au niveau du statement même ou au niveau de l'interpréteur ? (surement au niveau de l'interpréteur.
+  -> pour le CustomStatement ça fait du sens du coup
+
+---
+
+
+
