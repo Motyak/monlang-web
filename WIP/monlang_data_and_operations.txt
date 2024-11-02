@@ -1,0 +1,60 @@
+Fundamental data types (pod aka inactive/inert data)..
+  ..with their respective underlying C++ respresentation :
+  -> Byte based on C++ uint8_t
+  -> Bool based on C++ bool
+  -> Char based on C++ char
+  -> UInt based on C++ int64_t
+  -> Int based on C++ int64_t
+  -> UFrac based on C++ frac_t
+    -> frac_t is a struct with two int64_t
+  -> Frac based on C++ frac_t
+    -> frac_t is a struct with two int64_t
+  -> Float based on C++ double
+  -> Str based on C++ std::string
+  -> List based on C++ std::vector<object_t*>*
+  -> Struct based on C++ map_t
+    -> map_t is a struct with one..
+       ..std::unordered_map<identifier_t, object_t*>..
+       ..and one std::vector<identifier_t>..
+       ..where identifier_t is a string
+  -> Map based on C++ map_t
+    -> map_t is a struct with one..
+       ..std::unordered_map<HashablePtr<object_t*>, object_t*>..
+       ..and one std::vector<HashablePtr<object_t*>>
+
+Fundamental binary operators
+  -> arithmetic operators (also ^ for power)
+    -> with Int, Float data (using C++ operators directly)
+    -> with UInt, Frac, UFrac data
+    -> Str, List concatenations
+  -> comparison operators (<, >, ==, <>, <=, >=)
+    -> between two val of the same type, for all fundamental types
+  -> logical operators (and, or)
+    -> with Bool data
+  -> C++ bitwise operators
+    -> with Byte data
+
+Fundamental functions (special cases)
+  -> unary operators
+    -> -(val) -- minus
+    -> ~(val) -- bitwise not
+    -> not(val) -- logical not
+  -> explicit casts <> conversions
+    -> OutType!(val)
+  -> constructions / conversions
+    -> OutType(val)
+  -> optional construction
+    -> OutType?() -- empty optional
+    -> OutType?(val) -- non-empty optional
+  -> print(val)
+    -> for all fundamental data types
+    
+Authorized explicit casts:
+Byte -> Char, UInt, Int
+Char -> Byte, UInt, Int
+UInt -> Int, UFrac, Frac | {Byte, Char} may work at runtime
+Int -> Frac | {Byte, Char, UInt, UFrac} may work at runtime
+UFrac -> Frac | {UInt, Int} may work at runtime
+Frac -> {UInt, Int, UFrac} may work at runtime
+
+
