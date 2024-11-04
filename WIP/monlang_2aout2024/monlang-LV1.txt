@@ -26,7 +26,7 @@ POSTFIX-PARENTHESES-GROUP := {WORD - ASSOCIATION} PARENTHESES-GROUP
 
 POSTFIX-SQUARE-BRACKETS-GROUP := {WORD - ASSOCIATION} SQUARE-BRACKETS-GROUP '?'?
 
-PATH := {WORD - ASSOCIATION} '.' NO-DOT ATOM
+PATH := {WORD - ASSOCIATION} '.' ATOM
 
 CURLY-BRACKETS-GROUP := '{' TERM? | ((NEWLINE <TAB(S)+1> PROGRAM-SENTENCE?)+ NEWLINE <TAB(S)>) '}'
 // note: <TAB(S)> is a as many TAB as nested levels (starting from 0, 1, ..)
@@ -34,8 +34,6 @@ CURLY-BRACKETS-GROUP := '{' TERM? | ((NEWLINE <TAB(S)+1> PROGRAM-SENTENCE?)+ NEW
 PARENTHESES-GROUP := '(' (TERM (',' SPACE TERM)*)? ')'
 
 SQUARE-BRACKETS-GROUP := '[' NO-SPACE-NO-COLON (TERM (',' SPACE TERM)*)? ']'
-
-PARENTHESES-TERM := '(' SPACE TERM SPACE ')'
 
 SQUARE-BRACKETS-TERM := '[' SPACE TERM SPACE ']'
 
@@ -47,6 +45,9 @@ ATOM-QUOTE* -- when we fall-through Atom BUT it starts with the >>'<< character
   -> should then be considered a Quotation (rather than a new individual grammar entity)
   -> we are forced to define it at this level in the grammar because we can't define Quotation based on Atom
      (since Atom isn't defined, it's the fall-through)
+
+DOLLARS-CBG* -- when we fall-through Atom BUT it start with >>${<< characters
+  -> should then be considered a special CurlyBracketsGroup
 
 ATOM -- fall-through
 
