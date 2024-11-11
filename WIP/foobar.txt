@@ -4,32 +4,12 @@
 foreach 1..=200 {
     let i $1
 
-    var cur-item ""
-    cur-item += [ i % 5 == 0 ] "Foo" || ""
-    cur-item += [ i % 7 == 0 ] "Bar" || ""
-    cur-item += [ cur-item == "" ] "${i}" || ""
+    var res ""
+    res += [ i % 5 == 0 ] "Foo" || ""
+    res += [ i % 7 == 0 ] "Bar" || ""
+    res += [ res == "" ] "${i}" || ""
 
-    println("{} -> {}", i, cur-item)
-}
-```
-
-# with Map and byte flags
-
-```monlang
-var map-to-output [Byte(1):"Foo", Byte(2):"Bar", Byte(3):"FooBar"]
-foreach 1..=200 {
-    let i $1
-    map-to-output[Byte(0)] = "${i}"
-
-    var flags Byte(0)
-    if [ i % 5 == 0 ] {
-        flags |= Byte(1 << 0)
-    }
-    if [ i % 7 == 0 ] {
-        flags |= Byte(1 << 1)
-    }
-
-    println("{} -> {}", i, map-to-output[flags])
+    println("{} -> {}", i, res)
 }
 ```
 
