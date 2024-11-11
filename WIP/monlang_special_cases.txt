@@ -1,0 +1,34 @@
+SPECIAL CASES (die(_), tern(_), ..)
+  -> implemented as macros
+
+{
+    [ precondition ] || die()
+    // ...
+}
+
+=>
+
+{
+    [ precondition ] || {
+        /*
+            print filename and lineno
+            based on $FILE and $LINENO,
+            including passed msg if any...
+        */
+        die
+    }
+}
+
+---
+
+tern(map |> has-key(key), key, default)
+
+=>
+
+{
+    [ map |> has-key(key) ] || return default
+    key
+}
+
+
+
