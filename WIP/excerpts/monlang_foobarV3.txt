@@ -3,8 +3,11 @@
 // returns -1 if a comes before b in map
 // returns 1 if a comes after b in map
 let compare-pos (map, a, b){
+    [ a <> b ] || die()
+
     [ map |> has-key(a) ] || return 0
     [ map |> has-key(b) ] || return 0
+
     let a_index {map |> index(a)}
     let b_index {map |> index(b)}
     [ a_index < b_index ] || return 1
