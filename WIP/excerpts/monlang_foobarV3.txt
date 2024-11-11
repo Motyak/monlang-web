@@ -45,18 +45,26 @@ var perform (side-effects, input):{
         var keyword side-effects[#nth]
         nth += 1
 
-        if [ keyword == 'all and all ] {
+        if [ keyword == 'all ] {
+            [ all ]
             side-effects['all]()
         }
-        elsif [ keyword == '!all and !(all) ] {
+        elsif [ keyword == '!all ] {
+            [ !(all) ]
             side-effects['!all]()
         }
 
-        elsif [ keyword == 'none and none ] {
+        elsif [ keyword == 'none ] {
+            [ none ]
             side-effects['none]()
         }
-        elsif [ keyword == '!none and !(none) ] {
+        elsif [ keyword == '!none ] {
+            [ !(none) ]
             side-effects['!none]()
+        }
+
+        elsif [ keyword in ['begin, 'end] ] {
+            ; -- dealt separately
         }
 
         else {
