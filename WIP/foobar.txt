@@ -44,15 +44,15 @@ foreach 1..=200 {
     print("<$i> -> ")
 
     if [ i % 5 == 0 ] {
-        all &= true
-        none |= true
+        all &&= true
+        none ||= true
         
         print("Foo")    
     }
 
     if [ i % 7 == 0 ] {
-        all &= true
-        none |= true
+        all &&= true
+        none ||= true
         
         print("Bar")
     }
