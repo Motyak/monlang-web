@@ -1,0 +1,64 @@
+foreach list {
+    print($1)
+}
+
+---
+
+foreach [1 .. 10] {
+    print("hello 10 times")
+}
+
+---
+
+foreach [1 .. len(list)] {
+    let nth $1
+    list[#nth] |> print()
+}
+
+---
+
+// in reverse order
+foreach [-1 .. -len(list)] {
+    let nth $1
+    list[#nth] |> print()
+}
+
+---
+
+do {
+    let curr next(&stream)
+    print(curr)
+}
+until [ eof?(stream) ]
+
+---
+
+do {
+    let curr next(&stream)
+    unless [ $first_it ] {
+        print(SPACE)
+    }
+    print(curr)
+}
+until [ eof?(stream) ]
+
+---
+
+let list [0 .. 9, 'A .. 'F]
+foreach list {
+    let d1 $1
+    foreach list {
+        let d2 $1
+        "0x<$d1><$d2>" |> print()
+    }
+}
+
+---
+
+let list [0 .. 9, 'A .. 'F]
+foreach list {
+    foreach list {
+        "0x<$$1><$1>" |> print()
+    }
+}
+
