@@ -1,0 +1,47 @@
+/* reduce */
+
+let reduce (op, init, list):{
+    var acc init
+    foreach list {
+        acc := op(acc, $1)
+    }
+    acc
+}
+
+reduce(+, 0, [1, 2, 3]) /* 6
+    effectively +(+(+(0, 1), 2), 3)
+        <=> 0 |> +(1) |> +(2) |> +(3)
+    similar to +(0, 1, 2, 3)
+        <=> 0 + 1 + 2 + 3
+*/
+
+reduce(+, 'T, 'ommy) /* Tommy
+    effectively +(+(+(+('T, 'o), 'm), 'm), 'y)
+        <=> 'T |> +('o') |> +('m) |> +('m) |> +('y)
+    similar to +('T, 'o, 'm, 'm, 'y)
+        <=> 'T + 'o + 'm + 'm + 'y
+*/
+
+---
+
+/* define `pipe` in terms of `reduce` */
+
+let pipe (fns...):{
+    let compose (fn1, fn2):{(x):{x |> fn1() |> fn2()}}
+    let ret {
+        let op compose
+        let init (x):{x} -- identity function
+        let list fns
+        reduce(op, init, list)
+    }
+    ret
+}
+
+let increment (x):{x + 1}
+let double (x):{x * 2}
+pipe(increment, double)
+var inc-then-double $res
+
+inc-then-double(10) /* 22
+    <=> 10 |> increment() |> double()
+*/

@@ -1,0 +1,105 @@
+
+// returns 0 if any of the entry doesn't exist in map
+// returns -1 if a comes before b in map
+// returns 1 if a comes after b in map
+let compare-pos (map, a, b){
+    [ map |> has-key(a) ] || return 0
+    [ map |> has-key(b) ] || return 0
+    let a_index {map |> index(a)}
+    let b_index {map |> index(b)}
+    [ a_index < b_index ] || return 1
+    -1
+}
+
+var perform (side-effects, input):{
+    static_var keywords ['begin, 'end, 'all, '!all, 'none, '!none]
+
+    var nth 1
+    var all false
+    var none true
+
+    side-effects['begin]?()
+
+    /* first iteration for non-keywords */
+    while [ nth < len(side-effects) ] {
+        [ side-effects[#nth] !in keywords ] || continue
+        var pred side-effects[#nth]
+        nth += 1
+
+        [ side-effects[#nth] !in keywords ] || die("non-keywords must be passed as pairs; the predicate then the associated side-effect")
+        var side-effect side-effects[#nth]
+        nth += 1
+
+        [ pred(input) ] || continue
+        all &= true
+        none |= true
+        side-effect()
+    }
+
+    [ nth > len(side-effects) ] || die("trailing isolated non-keyword")
+    nth := 1
+
+    /* second iteration for keywords */
+    while [ nth < len(side-effects) ] {
+        [ side-effects[#nth] in keywords ] || continue
+        var keyword side-effects[#nth]
+        nth += 1
+
+        if [ keyword == 'all and all ] {
+            side-effects['all]()
+        }
+        elsif [ keyword == '!all and !(all) ] {
+            side-effects['!all]()
+        }
+
+        elsif [ keyword == 'none and none ] {
+            side-effects['none]()
+        }
+        elsif [ keyword == '!none and !(none) ] {
+            side-effects['!none]()
+        }
+
+        else {
+            die() -- bug
+        }
+    }
+
+    side-effects['end]?()
+}
+
+foreach [1 .. 200] {
+    let i $1
+
+    /*
+        perform side-effects based on conditions..
+        ..and/or order of execution
+    */
+
+    let side-effects [
+        'begin:():{print("<$i> -> ")}
+        'end:():{println()}
+
+        /*
+            positioning matters from now on
+            (affects order of execution)
+        */
+
+        'all:():{;}
+        '!all:():{;}
+        'none:():{print("<$i>")}
+        '!none:():{;}
+
+        /*
+            names don't matter from now on..
+            .., just avoid collisions
+        */
+
+        'foo?:(x):{x % 5 == 0}
+        'foo:():{print("Foo")}
+
+        'bar?:(x):{x % 7 == 0}
+        'bar:():{print("Bar")}
+    ]
+
+    perform(side-effects, input)
+}
