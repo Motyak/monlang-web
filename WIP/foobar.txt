@@ -32,3 +32,47 @@ foreach 1..=200 {
     println("{} -> {}", i, map-to-output[flags])
 }
 ```
+
+# Most complete yet relatively staight-forward one
+
+```monlang
+foreach 1..=200 {
+    let i $1
+    var all false
+    var none true
+
+    print("<$i> -> ")
+
+    if [ i % 5 == 0 ] {
+        all &= true
+        none |= true
+        
+        print("Foo")    
+    }
+
+    if [ i % 7 == 0 ] {
+        all &= true
+        none |= true
+        
+        print("Bar")
+    }
+
+    if [ all ] {
+        ;
+    }
+    else {
+        // if any but all
+        ;
+    }
+
+    if [ none ] {
+        print("<$i>")
+    }
+    else {
+        // if any but none
+        ;
+    }
+
+    println() -- line feed
+}
+```
