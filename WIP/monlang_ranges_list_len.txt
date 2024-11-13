@@ -1,0 +1,20 @@
+
+1 .. 0
+<=>
+[1, 0]
+
+1 .. len(list)
+<=>
+1 .. ListLength(0)
+<=>
+[]
+
+-1 .. -len(list)
+<=>
+-1 .. -ListLength(0)
+<=>
+[]
+
+ListLength est castable implicitement en UInt
+-ListLength est castable implicitement en Int
+
