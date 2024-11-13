@@ -1,58 +1,34 @@
 # simple, with ternary operators
 
 ```monlang
-foreach 1..=200 {
+foreach [1 .. 200] {
     let i $1
 
     var res ""
-    res += [ i % 5 == 0 ] "Foo" || ""
-    res += [ i % 7 == 0 ] "Bar" || ""
-    res += [ res == "" ] "${i}" || ""
+    res += tern(i % 5 == 0, "Foo", "")
+    res += tern(i % 7 == 0, "Bar", "")
+    res += tern(res == "", "${i}", "")
 
     println("{} -> {}", i, res)
 }
 ```
 
-# Most complete yet relatively staight-forward one
+# Most complete, assuming util function (see monlang_foobarV3.txt)
 
 ```monlang
-foreach 1..=200 {
+foreach [1 .. 200] {
     let i $1
-    var all false
-    var none true
 
-    print("<$i> -> ")
+    let side-effects [
+        'foo?:(x):{x % 5 == 0}
+        'foo:():{print("Foo")}
+    
+        'bar?:(x):{x % 7 == 0}
+        'bar:():{print("Bar")}
+    
+        'none:():{print("<$i>")}
+    ]
 
-    if [ i % 5 == 0 ] {
-        all &= true
-        none |= true
-        
-        print("Foo")    
-    }
-
-    if [ i % 7 == 0 ] {
-        all &= true
-        none |= true
-        
-        print("Bar")
-    }
-
-    if [ all ] {
-        ;
-    }
-    else {
-        // if any but all
-        ;
-    }
-
-    if [ none ] {
-        print("<$i>")
-    }
-    else {
-        // if any but none
-        ;
-    }
-
-    println() -- line feed
+    perform(side-effects, i)
 }
 ```
