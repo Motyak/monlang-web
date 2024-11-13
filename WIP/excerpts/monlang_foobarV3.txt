@@ -112,5 +112,5 @@ foreach [1 .. 200] {
         'bar:():{print("Bar")}
     ]
 
-    perform(side-effects, input)
+    perform(side-effects, i)
 }
