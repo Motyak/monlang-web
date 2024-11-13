@@ -3,8 +3,11 @@
 // returns -1 if a comes before b in map
 // returns 1 if a comes after b in map
 let compare-pos (map, a, b){
+    [ a <> b ] || die()
+
     [ map |> has-key(a) ] || return 0
     [ map |> has-key(b) ] || return 0
+
     let a_index {map |> index(a)}
     let b_index {map |> index(b)}
     [ a_index < b_index ] || return 1
@@ -45,18 +48,26 @@ var perform (side-effects, input):{
         var keyword side-effects[#nth]
         nth += 1
 
-        if [ keyword == 'all and all ] {
+        if [ keyword == 'all ] {
+            [ all ]
             side-effects['all]()
         }
-        elsif [ keyword == '!all and !(all) ] {
+        elsif [ keyword == '!all ] {
+            [ !(all) ]
             side-effects['!all]()
         }
 
-        elsif [ keyword == 'none and none ] {
+        elsif [ keyword == 'none ] {
+            [ none ]
             side-effects['none]()
         }
-        elsif [ keyword == '!none and !(none) ] {
+        elsif [ keyword == '!none ] {
+            [ !(none) ]
             side-effects['!none]()
+        }
+
+        elsif [ keyword in ['begin, 'end] ] {
+            ; -- dealt separately
         }
 
         else {
@@ -101,5 +112,5 @@ foreach [1 .. 200] {
         'bar:():{print("Bar")}
     ]
 
-    perform(side-effects, input)
+    perform(side-effects, i)
 }
