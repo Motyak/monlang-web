@@ -1,0 +1,36 @@
+
+/* inredirectly recursive function */
+
+DECL var is-odd (n):{} -- tmp stub impl
+
+var is-even (n):{
+    let TRUE 1
+    let FALSE 0
+    
+    [ n == 0 ] || return is-odd(n) == FALSE
+    TRUE
+}
+
+IMPL is-odd := (n):{
+    is-even(n - 1)
+}
+
+---
+
+/* recursive lambda expression */
+
+(op, from, to):{
+    let curr from
+    [ curr >= to ] || return ;
+    op(curr)
+    let new-from from + 1
+    $self(op, new-from, to)
+}
+var loop $res
+
+loop(print, 1, 10)
+
+
+
+
+
