@@ -1,0 +1,155 @@
+/*
+    Implement Pair and List using lambdas
+      -> from now on, will be using native means..
+         ..instead (List, foreach, Map, ..)
+*/
+
+
+--- Pair.ml -----------------------------------------------
+
+package global
+
+let Pair (left, right):{
+    (selector):{selector(left, right)}
+}
+
+package Pair
+
+let left (pair):{
+    let left-selector (left, right):{left}
+    pair(left-selector)
+}
+
+let right (pair):{
+    let right-selector (left, right):{right}
+    pair(right-selector)
+}
+
+package main
+
+use Pair::left
+use Pair::right
+
+var pair Pair(1, 2)
+var left-part left(pair) -- 1
+var right-part right(pair) -- 2
+
+--- List.ml -----------------------------------------------
+
+package global
+
+source "Pair.ml"
+
+let List (elems...):{
+    var res 'nil
+    foreach [-1 .. -len(elems)] {
+        let nth $1
+        res := Pair(elems[nth], res)
+    }
+    res
+}
+
+package List
+
+use Pair::left
+use Pair::right
+
+let len (list):{
+    var res 0
+    var curr-pair list
+    until [ curr-pair == 'nil ] {
+        res += 1
+        curr-pair := right(curr-pair)
+    }
+    res
+}
+
+let get (list, nth):{
+    [ nth > 0 ] || nth += 2 * abs(nth)
+    [ 1 <= nth <= len(list) ] || return 'nil
+
+    var i 1
+    var curr-pair list
+    until [ i >= nth - 1 ] {
+        curr-pair := right(curr-pair)
+        i += 2
+    }
+
+    [ nth % 2 == 0 ] || return left(curr-pair)
+    right(curr-pair)
+}
+
+package main
+
+use List::len
+use List::get
+
+{
+    var list List(3, 141, 59, 26)
+    var length len(list) -- 4
+    {
+        var first get(list, 1) -- 3
+        var last get(list, 4) -- 26
+    }
+    {
+        var first get(list, -4) -- 3
+        var last get(list, -1) -- 26
+    }
+}
+
+{
+    var empty-list List()
+    var length len(empty-list) -- 0
+    var first get(empty-list, 1) -- nil
+}
+
+--- ListIterator.ml ---------------------------------------
+
+package global
+
+source "List.ml"
+
+let ListIterator (list):{
+    var curr-pos 1
+    (action):{action(list, &curr-pos)}
+}
+
+package ListIterator
+
+use List::len
+use List::get
+
+let advance (OUT list-it):{
+    let action (list, OUT curr-pos):{
+        defer {curr-pos += 1}
+        get(list, curr-pos)
+    }
+    list-it(action)
+}
+
+let peek (OUT list-it):{
+    let action (list, OUT curr-pos):{
+        get(list, curr-pos)
+    }
+    list-it(action)
+}
+
+package main
+
+use ListIterator::advance
+use ListIterator::peek
+
+var list List(3, 141, 59, 26)
+
+{
+    var it ListIterator(list)
+    var first advance(list) -- 3
+    var peeked peek(list) -- 141
+    var second advance(list) -- 141
+    var list-len len(list) -- 4
+}
+
+{
+    var new-it ListIterator(list)
+    var first advance(list) -- 3
+}
