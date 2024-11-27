@@ -110,28 +110,41 @@ package global
 source "List.ml"
 
 let ListIterator (list):{
+    use List::len
+    use List::get
+
     var curr-pos 1
-    (action):{action(list, &curr-pos)}
+
+    let advance ():{
+        defer {curr-pos += 1}
+        get(list, curr-pos)
+    }
+
+    let peek ():{
+        get(list, curr-pos)
+    }
+
+    let dispatch [
+        'advance:advance
+        'peek:peek
+    ]
+    
+    dispatch
 }
 
 package ListIterator
 
-use List::len
-use List::get
-
+// leaky abstraction here because even if you pass..
+// ..arg by value the state variable will still get updated
+// ..(that's why structs are better than lambdas with state..
+// ..unless you want to hide change "OOP-style")
 let advance (OUT list-it):{
-    let action (list, OUT curr-pos):{
-        defer {curr-pos += 1}
-        get(list, curr-pos)
-    }
-    list-it(action)
+    list-it['advance]()
 }
 
+// ..same here
 let peek (OUT list-it):{
-    let action (list, OUT curr-pos):{
-        get(list, curr-pos)
-    }
-    list-it(action)
+    list-it['peek]()
 }
 
 package main
