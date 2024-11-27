@@ -40,6 +40,8 @@ package global
 
 source "Pair.ml"
 
+// only added for conveninence
+// .., to avoid nested Pair ctors
 let List (elems...):{
     var res 'nil
     foreach [-1 .. -len(elems)] {
@@ -85,7 +87,9 @@ use List::len
 use List::get
 
 {
-    var list List(3, 141, 59, 26)
+    var list List(3, 141, 59, 26) /*
+        <=> Pair(3, Pair(141, Pair(59, Pair(26, 'nil))))
+    */
     var length len(list) -- 4
     {
         var first get(list, 1) -- 3
@@ -110,7 +114,7 @@ package global
 source "List.ml"
 
 let ListIterator (list):{
-    var curr-pos 1
+    var curr-pos 1 -- lambda state variable
     (action):{action(list, &curr-pos)}
 }
 
@@ -119,6 +123,10 @@ package ListIterator
 use List::len
 use List::get
 
+// leaky abstraction here because even if you pass..
+// ..arg by value, the state variable captured by ref by the lambda..
+// ..will still get updated (that's why structs are better than..
+// ..lambdas with state unless you want to hide change "OOP-style")
 let advance (OUT list-it):{
     let action (list, OUT curr-pos):{
         defer {curr-pos += 1}
@@ -127,7 +135,7 @@ let advance (OUT list-it):{
     list-it(action)
 }
 
-let peek (OUT list-it):{
+let peek (list-it):{
     let action (list, OUT curr-pos):{
         get(list, curr-pos)
     }
@@ -142,14 +150,14 @@ use ListIterator::peek
 var list List(3, 141, 59, 26)
 
 {
-    var it ListIterator(list)
-    var first advance(list) -- 3
-    var peeked peek(list) -- 141
-    var second advance(list) -- 141
+    var it ListIterator(list) -- lambda with state var
+    var first advance(&it) -- 3
+    var peeked peek(it) -- 141
+    var second advance(&it) -- 141
     var list-len len(list) -- 4
 }
 
 {
     var new-it ListIterator(list)
-    var first advance(list) -- 3
+    var first advance(&new-it) -- 3
 }
