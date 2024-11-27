@@ -115,7 +115,22 @@ source "List.ml"
 
 let ListIterator (list):{
     var curr-pos 1 -- lambda state variable
-    (action):{action(list, &curr-pos)}
+
+    let advance ():{
+        defer {curr-pos += 1}
+        get(list, curr-pos)
+    }
+
+    let peek ():{
+        get(list, curr-pos)
+    }
+
+    let dispatch [
+        'advance:advance
+        'peek:peek
+    ]
+
+    (action):{dispatch[action]()}
 }
 
 package ListIterator
@@ -124,22 +139,15 @@ use List::len
 use List::get
 
 // leaky abstraction here because even if you pass..
-// ..arg by value, the state variable captured by ref by the lambda..
-// ..will still get updated (that's why structs are better than..
-// ..lambdas with state unless you want to hide change "OOP-style")
+// ..arg by value, the state variable will still get updated..
+// ..(that's why structs are better than lambdas with state..
+// ..unless you want to hide change "OOP-style")
 let advance (OUT list-it):{
-    let action (list, OUT curr-pos):{
-        defer {curr-pos += 1}
-        get(list, curr-pos)
-    }
-    list-it(action)
+    list-it('advance)
 }
 
 let peek (list-it):{
-    let action (list, OUT curr-pos):{
-        get(list, curr-pos)
-    }
-    list-it(action)
+    list-it('peek)
 }
 
 package main
@@ -149,6 +157,20 @@ use ListIterator::peek
 
 var list List(3, 141, 59, 26)
 
+/* OOP style */
+{
+    var it ListIterator(list) -- lambda with state var
+    var first it('advance) -- 3
+    var peeked it('peek) -- 141
+    var second it('advance) -- 141
+    var list-len len(list) -- 4
+}
+{
+    var new-it ListIterator(list)
+    var first new-it('advance) -- 3
+}
+
+/* leaky C-style */
 {
     var it ListIterator(list) -- lambda with state var
     var first advance(&it) -- 3
@@ -156,8 +178,10 @@ var list List(3, 141, 59, 26)
     var second advance(&it) -- 141
     var list-len len(list) -- 4
 }
-
+/* simulate OOP style with pipe operator */
 {
     var new-it ListIterator(list)
-    var first advance(&new-it) -- 3
+    var first &new-it |> advance() /* 3
+        <=> advance(&new-it)
+    */
 }
