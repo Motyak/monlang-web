@@ -24,7 +24,7 @@ ASSOCIATION := {WORD - ASSOCIATION} ':' NO-COLON WORD
 
 POSTFIX-PARENTHESES-GROUP := {WORD - ASSOCIATION} PARENTHESES-GROUP
 
-POSTFIX-SQUARE-BRACKETS-GROUP := {WORD - ASSOCIATION} SQUARE-BRACKETS-GROUP '?'?
+POSTFIX-SQUARE-BRACKETS-GROUP := {WORD - ASSOCIATION} SQUARE-BRACKETS-GROUP '!'?
 
 PATH := {WORD - ASSOCIATION} '.' ATOM
 
@@ -48,6 +48,9 @@ ATOM-QUOTE* -- when we fall-through Atom BUT it starts with the >>'<< character
 
 DOLLARS-CBG* -- when we fall-through Atom BUT it start with >>${<< characters
   -> should then be considered a special CurlyBracketsGroup
+
+(if a decimal number is met during consumeAtom 'look behind' => we create a number in the Atom rather than a Path.
+.. Also supports parentheses for repeating decimals)
 
 ATOM -- fall-through
 
