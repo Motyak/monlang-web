@@ -29,7 +29,7 @@ var perform (side-effects, input):{
         var pred side-effects[#nth]
         nth += 1
 
-        [ side-effects[#nth] !in keywords ] || die("non-keywords must be passed as pairs; the predicate then the associated side-effect")
+        [ side-effects[#nth] !in keywords ] || die -- non-keywords must be passed as pairs; the predicate then the associated side-effect
         var side-effect side-effects[#nth]
         nth += 1
 
@@ -39,7 +39,7 @@ var perform (side-effects, input):{
         side-effect()
     }
 
-    [ nth > len(side-effects) ] || die("trailing isolated non-keyword")
+    [ nth > len(side-effects) ] || die -- trailing isolated non-keyword
     nth := 1
 
     /* second iteration for keywords */
