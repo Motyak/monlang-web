@@ -72,13 +72,13 @@ let get (list, nth):{
 
     var i 1
     var curr-pair list
-    until [ i >= nth - 1 ] {
+    until [ i >= nth ] {
         curr-pair := right(curr-pair)
         i += 2
     }
 
-    [ nth % 2 == 0 ] || return left(curr-pair)
-    right(curr-pair)
+    [ nth % 2 == 1 ] || return right(curr-pair)
+    left(curr-pair)
 }
 
 package main
