@@ -67,7 +67,9 @@ let len (list):{
 }
 
 let get (list, nth):{
-    [ nth > 0 ] || nth += 2 * abs(nth)
+    unless [ nth > 0 ] {
+        nth += 2 * abs(nth)
+    }
     [ 1 <= nth <= len(list) ] || return 'nil
 
     var i 1
