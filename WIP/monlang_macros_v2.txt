@@ -1,0 +1,42 @@
+// substitute TERN(cond, a, b) with the following block expression, where each symbol is replaced with actual arguments
+macro TERN($Expr:cond, $Expr:a, $BlockExpr:b) {
+    [ cond ] || return b
+    a
+}
+
+// how to use TERN() macro:
+var a 0
+TERN(a == 0, "zero", {
+    TERN(a == 1, "one", {
+    	die -- this won't get evaluated (short-cirtcuiting)
+        "two"
+    })
+}) -- zero
+
+// here we have an immediately-evaluated block, will therefore programatically generate the code to return (as a list of $Statement, could also be one single entity e.g.: a $Literal(91))
+macro IF($Expr:cond, $Block) ${
+    [ cond ] || return []
+    var res []
+    foreach $Block {
+        res += [$1]
+    }
+    res
+}
+
+// how to use IF() macro:
+let doit (prog):{
+    var prog_ prog.val
+    IF(len(prog_.statements) > 0, {
+        curr-indent += 1
+        defer {curr-indent -= 1}
+    
+        var a 91
+    })
+    a := 0 -- works
+}
+
+// here we just define a marker macro (for inline documentation), will replace with nothing (without messing with LV1 whitespace rules)
+macro OUT ;
+
+
+
