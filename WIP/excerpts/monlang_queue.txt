@@ -1,0 +1,76 @@
+
+--- Pair.ml -----------------------------------------------
+
+package global
+
+let Pair (left, right):{
+    (selector):{selector(left, right)}
+}
+
+package Pair
+
+let left (pair):{
+    let left-selector (left, right):{left}
+    pair(left-selector)
+}
+
+let right (pair):{
+    let right-selector (left, right):{right}
+    pair(right-selector)
+}
+
+package main
+
+use Pair::left
+use Pair::right
+
+var pair Pair(1, 2)
+
+
+--- Queue.ml -----------------------------------------------
+
+
+package global
+
+source "Pair.ml"
+
+// lists are nested pairs..
+// .., they grow from left to right and use 'nil for padding
+type List Pair
+
+let Queue ():{
+    use Pair::left
+    use Pair::right
+
+    var m_back List('nil, 'nil)
+    let m_front m_back
+
+    let push (x):{
+        let merge (list1, list2):{
+            [ left(list1) <> 'nil ] || return list2
+            List(left(list1), $self(right(list1), list2))
+        }
+        m_back := merge(m_back, List(x, 'nil))
+    }
+
+    let front ():{
+        left(m_front)
+    }
+
+    let pop ():{
+        [ left(m_front) <> 'nil ] || return 'nil
+        var res left(m_front)
+        m_front := right(m_front)
+        res
+    }
+}
+
+
+
+
+
+
+
+
+
+

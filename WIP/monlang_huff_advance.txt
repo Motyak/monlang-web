@@ -1,0 +1,54 @@
+
+
+
+let Huffcode::advance (OUT huffcode, OUT bitstream):{
+    var next-bit next(&bitstream)
+
+    [ next-bit <> Bitstream::END ] || return {
+        huffcode.arr-index := -1
+        -2
+    }
+
+    huffcode.arr-index := huffcode.arr-index * 2 + {
+        [ next-bit == 0 ] || return 2
+        1
+    }
+
+    [ huffcode.arr-index - 1 < huffcode.tommytree.arr-len ] || return -2
+    [ huffcode.tommytree.tree[huffcode.arr-index - 1] <> Tommytree::NUL ] || return -1
+
+    let left-child-exists {
+        let allocated huffcode.arr-index * 2 < huffcode.tommytree.arr-len
+        let initialized huffcode.tommytree.tree[huffcode.arr-index * 2] <> Tommytree::NUL
+        allocated and initialized
+    }
+    let right-child-exists {
+        let allocated huffcode.arr-index * 2 + 1 < huffcode.tommytree.arr-len
+        let initialized huffcode.tommytree.tree[huffcode.arr-index * 2 + 1] <> Tommytree::NUL
+        allocated and initialized
+    }
+    let is-leaf not(left-child-exists or right-child-exists)
+    
+    [ is-leaf ] || return -1
+    huffcode.tommytree.tree[huffcode.arr-index - 1]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
