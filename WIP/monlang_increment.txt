@@ -23,3 +23,8 @@ let postinc (OUT var'):{
     print(somevar) -- 11
 }
 
+```
+    NOTE: postinc impl works because of the fact block expressions cannot return a reference..
+          .., therefore it evaluates the VALUE (not lvalue) of var' (that was passed by reference)..
+          ..as the return value. The defer comes after.
+```
