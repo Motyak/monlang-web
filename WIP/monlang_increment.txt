@@ -1,0 +1,25 @@
+
+let preinc (OUT var'):{
+    var' += 1
+    var'
+}
+
+let ++ preinc
+
+let postinc (OUT var'):{
+    defer {var' += 1}
+    var'
+}
+
+{
+    var somevar 10
+    print(++(&somevar)) -- 11
+    print(somevar) -- 11
+}
+
+{
+    var somevar 10
+    print(postinc(&somevar)) -- 10
+    print(somevar) -- 11
+}
+
