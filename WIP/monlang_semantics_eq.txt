@@ -1,0 +1,27 @@
+
+are semantically equivalent:
+
+((x, y):{
+    display(x + y)
+    display(x - y)
+})(3, 4)
+
+<=>
+
+{
+    let fn (x, y):{
+        display(x + y)
+        display(x - y)
+    }
+    fn(3, 4)
+}
+
+<=>
+
+{
+    let x 3
+    let y 4
+    display(x + y)
+    display(x - y)
+}
+
