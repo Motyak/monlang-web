@@ -1,0 +1,40 @@
+```
+    values must be of the same type
+    Keys must be distinct, values as well
+```
+enum Color {
+    RED = 'red -- meaning Color::RED <=> Color('red)
+    BLUE = 'blue
+}
+
+struct ColorRGB {
+    Int r
+    Int g
+    Int b
+    
+    invariants {
+        [ 0 <= r <= 255 ]
+        [ 0 <= g <= 255 ]
+        [ 0 <= b <= 255 ]
+    }
+}
+
+let rgb [
+    Color::RED:ColorRgb(255, 0, 0)
+    Color::BLUE:ColorRgb(0, 0, 255)
+]
+```
+    alternatively:
+
+    let rgb ${
+        var rgb [:]
+        rgb[Color::RED] := ColorRgb(255, 0, 0)
+        rgb[Color::BLUE] := ColorRgb(0, 0, 255)
+        rgb
+    }
+```
+
+rgb[Color::BLUE] -- ColorRgb(0, 0, 255)
+rgb[Color('blue)] -- ColorRgb(0, 0, 255)
+rgb[Color(str)]
+
