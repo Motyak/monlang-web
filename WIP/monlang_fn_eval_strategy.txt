@@ -1,0 +1,32 @@
+pass by reference
+vs
+pass by value
+vs
+pass by future
+
+---
+
+When evaluating a function call arguments, before all things, labels (let) are resolved (recursively)
+  -> bind function call to another
+  -> bind symbol to a block expression
+  -> bind symbol to an lvalue
+  -> bind symbol to a value (<=> non-lvalue)
+
+Any lvalue passed as argument is passed by value, unless it's marked with an ampersand (&), in that case it is passed by reference.
+  -> An lvalue is an Expression that refers to an object in memory, syntactically it either matches a Symbol, Subscript or FieldAccess (even tough not all Symbol/Subscript/FieldAccess are lvalues).
+  -> an Lvalue must be evaluated if it's not self-evaluated (Symbol), for example we must check the the index passed as subscript isn't out of range, etc..
+    -> BEFORE applying the function to arguments
+
+Block expressions and function calls passed as argument are passed by future, meaning it's evaluated at the same time as the parent function call and its result gets pulled when needed. However, the first error (in sequential order) to occur will be propagated to parent and interrupt it. (so that we get the same result as in sequential evaluation, though not the same side-effect).
+
+Any other expression passed as argument is passed by value, meaning arguments gets evaluated before we enter the function body.
+
+---
+
+To force a block expression or function call to get evaluated before entering the function, we can simply create variables to store their result in and pass the variables as arguments to the function call.
+  -> better debugability
+  -> can switch back and forth var <-> let to test sequential <-> concurrent execution
+
+If part of a delayed block (let block) is to be evaluated right away, we should use `${}` syntax inside the block (this part will get evaluated at definition time, right away).
+
+
