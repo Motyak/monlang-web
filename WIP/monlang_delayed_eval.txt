@@ -1,0 +1,63 @@
+
+raisons pour lesquelles faire un let <lambda()> plutôt qu'un let <blockExpr> :
+  -> si utiliser plusieurs fois
+  -> sémantique plus forte de "calcul" (plutôt que simple valeur)
+
+=> On doit pouvoir remplacer le let par un var sans que ça change le résultat
+   (éventuellement le temps d'execution et les side-effects)
+  
+Erreur lors de l'analyse statique:
+  -> si on référence une delayed evaluation (let + name + block ou let + name + function call) plus d'une fois
+    -> dire de déclarer une lambda à la place et d'appeler avec ()
+       ..ou bien de déclarer une variable à la place
+  -> warning si on référence zéro fois ?
+    -> même chose que si une variable n'était pas accessible/utilisée
+    
+---
+
+let <name> <blockExpr>
+  -> evaluation
+let <name> <functionCall>
+  -> evaluation
+  
+let <name> <lambda>
+
+---
+
+evaluation = blockExpr | functionCall
+
+delayed-evaluation = let + <name> + <evaluation>
+
+
+
+'fds' is a symbol, as a symbol it should remain a name that gets
+resolved to a value (not an evaluation)
+
+'fds()' is a function, it's expected to perform an evaluation
+
+when evaluating a function body, we create a variable for each parameter
+(giving their name) and assign to each parameter its associated positional
+argument
+  -> delayed evaluations passed as argument become futures,
+     meaning it's a value that might not be ready yet but
+     that will at some point, you treat it as if it was already
+     there.
+     
+---
+
+(delayed block expression obey static scope rule)
+
+var cur 0
+
+let a {
+    cur + 1
+}
+
+{
+    var cur 1
+    print(a) -- 1, et non pas 2
+}
+
+
+
+

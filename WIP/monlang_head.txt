@@ -1,0 +1,89 @@
+
+```
+    reproduce unix pipeline with stateful lambdas, buffer and
+    delayed evaluation (let)
+
+    cat file | fold -w100 | head -n10
+```
+
+--- Optional.ml
+
+struct Optional {
+    is List
+
+    invariants {
+        len($self) <= 1
+    }
+}
+
+package Optional
+
+let some (x):{
+    [ len(x) == 1 ] || die
+    x[#1]
+}
+
+let none (x):{
+    len(x) == 1
+}
+
+
+
+
+--- eof.ml
+
+source "Optional.ml"
+
+let eof (OUT x):{
+    defer {
+        x := Optional()
+    }
+    none(x)
+}
+
+package main
+
+var x Optional('somevalue)
+
+unless [ eof(x -- pass by value) -- we check the return value ] {
+    print("DONE")
+}
+
+eof(&x -- pass by reference) -- we discard the return value
+
+
+
+
+--- main.ml
+
+source "eof.ml"
+
+let head (next-char, n):{
+    let next-line ():{
+        var line ""
+        var c next-char()
+        until [ eof(c) or some(c) == NEWLINE ] {
+            line += some(c)
+            c := next-char()
+        }
+        line
+    }
+
+    var cur next-line()
+    var i 1
+    let head-next ():{
+        defer {
+            if [ i < n ] {
+                cur := next-line()
+                i += 1
+            }
+            else {
+                eof(&cur)
+            }
+        }
+        cur
+    }
+    head-next
+}
+
+
