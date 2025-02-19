@@ -1,0 +1,44 @@
+
+--- table1.ml
+
+package table1
+
+var results [:]
+
+let fill_results ():{
+    ;
+}
+
+let save_results ():{
+    ;
+}
+
+package main
+
+table1::fill_results()
+table1::save_results()
+
+--- table2.ml
+
+source "table1.ml"
+
+let fill_results ():{
+    table1::fill_results()
+    ;
+}
+
+let save_results ():{
+    ;
+}
+
+package main
+
+table2::fill_results()
+table2::save_results()
+
+
+
+
+
+
+
