@@ -1,0 +1,29 @@
+; at global scope
+let count ${
+    var i 0
+    ():{
+        defer {i += 1}
+        i
+    }
+}
+
+count() -- 0
+count() -- 1
+
+---
+
+let create-counter (init):{
+    var i init
+    let count ():{
+        defer {i += 1}
+        i
+    }
+    count
+}
+
+var count-a create-counter(10)
+var count-b create-counter(100)
+count-a() -- 10
+count-b() -- 100
+count-a() -- 11
+
