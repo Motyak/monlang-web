@@ -24,7 +24,7 @@ let some (x):{
 }
 
 let none (x):{
-    len(x) == 1
+    len(x) == 0
 }
 
 
