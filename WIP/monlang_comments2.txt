@@ -1,0 +1,23 @@
+
+additional words aka "comments" :
+
+; line comment
+
+<somestuff> -- side comment
+
+```
+    long comment,
+    multiple lines..
+```
+
+; do A
+if [ _ ] {
+    ...
+} ; do B
+elsif [ _ ] {
+    ...
+} ; do C
+else {
+    ...
+}
+
