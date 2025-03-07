@@ -1,0 +1,31 @@
+
+--- bottom-up design in code
+
+{; do A}
+{; do B}
+{; do C}
+
+<= toggle =>
+
+; do A
+{
+    ;
+}
+
+; do B
+{
+    ;
+}
+
+; will eventually build generalized functions..
+; ..out of them
+
+--- top-down design (NOT in code)
+
+; will define later
+
+consumeA(in)
+consumeB(in)
+consumeC(in)
+
+

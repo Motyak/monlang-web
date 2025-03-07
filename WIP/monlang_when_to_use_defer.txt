@@ -1,0 +1,20 @@
+
+when to use defer:
+
+instead of ```
+    {
+        {; do A}
+        var res compute()
+        {; do B}
+        res
+    }
+```
+
+do ```
+    {
+        {; do A}
+        defer {; do B}
+        compute() -- result
+    }
+```
+
