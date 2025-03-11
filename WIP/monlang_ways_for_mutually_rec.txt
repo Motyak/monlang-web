@@ -1,0 +1,72 @@
+```
+    the most straight-forward way
+```
+
+var odd? (n):{} -- stub
+
+let even? (n):{
+    [ n <> 0 ]
+    odd?(n - 1)
+}
+
+; now we override the stub
+odd? := (n){
+    false == even?(n)
+}
+
+---
+
+```
+    the "no closure"'s way
+```
+
+let _even? (_even?, _odd?, n):{
+    [ n <> 0 ] || return true
+    _odd?(_even?, _odd?, n - 1)
+}
+
+let _odd? (_even?, _odd?, n):{
+    false == _even?(_even?, _odd?, n)
+}
+
+let even? (n):{
+    _even?(_even?, _odd?, n)
+}
+
+let odd? (n):{
+    _odd?(_even?, _odd?, n)
+}
+
+---
+
+```
+    the following "export" pattern can also be used..
+    ..for declaring private functions..
+    ..(or "static" as you would call them in c/c++)
+```
+
+let import ${
+    var export [:]
+
+    var odd? (n):{} -- stub
+
+    let even? (n):{
+        [ n <> 0 ]
+        odd?(n - 1)
+    }
+    export['even?] := even?
+
+    ; now we override the stub
+    odd? := (n){
+        false == even?(n)
+    }
+    export['odd?] := odd?
+        
+    export
+}
+
+let even? import['even?]
+let odd? import ['odd?]
+
+
+
