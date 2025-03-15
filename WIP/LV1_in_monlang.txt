@@ -1,0 +1,122 @@
+
+Program contains 0..n ProgramSentence:
+```
+    ; empty program
+    Program()
+
+    ; program with 2 sentences
+    Program(
+        ProgramSentence(
+            ...
+        )
+        ProgramSentence(
+            ...
+        )
+    )
+```
+
+ProgramSentence contains 1..n ProgramWord:
+```
+    ; program sentence cannot be empty
+    ProgramSentence() -- ERR
+
+    ; sentence with 2 words
+    ProgramSentence(
+        ProgramWord(..)
+        ProgramWord(..)
+    )
+```
+
+ProgramWord is a variant among "word" entities (Atom, Quotation, ...):
+```
+    ; Atom as a word
+    ProgramWord(Atom(..))
+
+    ; Quotation as a word
+    ProgramWord(Quotation(..))
+```
+
+Those 2, Atom and Quotation, are the grammar's "terminals":
+
+Atom contains a value (next characters until hitting EOF or any character reserved by an entity):
+```
+    ; Atom cannot be empty
+    Atom(``) -- ERR
+
+    ; Atom with a value
+    Atom(`somevalue`)
+```
+
+Quotation contains arbitrary text (next characters between quote delimiters):
+```
+    ; empty Quotation
+    Quotation(``)
+
+    ; Quotation with an arbitrary text
+    Quotation(`some arbitrary text`)
+```
+
+---
+
+```
+    Implement LV1 parser (AST in a "SICP data abstraction" fashion)..
+    and printer in monlang, that will feed itself as input
+      -> a valid monlang program implies it is valid LV1..
+         .., so we won't bother ourselves with error handling
+    
+    What we want to show/demonstrate:
+      -> We can run our completed monlang program (LV1 parser) on itself
+      -> We can build a relatively complex language (LV1) parser additively in monlang
+
+    Start with the simple grammar:
+    Program/ProgramSentence/ProgramWord/Atom
+    ..and then add new words (e.g.: Quotation, sentence groups, term groups, ..)
+    ..and ways of composing words (postfixes, associations, ..)
+
+    /* ctors */
+    Program(sentences)
+    ProgramSentence(words)
+    Atom(value)
+
+    /* casts */
+    asWord(word-entity)
+      -> Atom('somevalue) |> asWord()
+
+    /* selectors */
+    sentences(prog)
+    words(sentence)
+    value(atom)
+
+    <no mutators>
+    to "mutate", we recreate
+```
+
+```
+    example:
+    ```
+        a b c
+        d e
+    ```
+    =>
+    Program(
+        ProgramSentence(
+            ProgramWord(Atom(`a`))
+            ProgramWord(Atom(`b`))
+            ProgramWord(Atom(`c`))
+        )
+        ProgramSentence(
+            ProgramWord(Atom(`d`))
+            ProgramWord(Atom(`e`))
+        )
+    )
+```
+
+---
+
+```
+    consume characters until hitting EOF or any character..
+    ..reserved by an entity.
+```
+let next-value ():{
+    ; todo
+}
