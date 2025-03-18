@@ -70,8 +70,9 @@ Quotation contains arbitrary text (next characters between quote delimiters):
 
     Start with the simple grammar:
     Program/ProgramSentence/ProgramWord/Atom
-    ..and then add new words (e.g.: Quotation, sentence groups, term groups, ..)
+    ..and then add new words (e.g.: sentence groups, term groups, ..)
     ..and ways of composing words (postfixes, associations, ..)
+    ..finally add Quotation and SquareBracketsTerm (ugly but required for LV2)
 
     /* ctors */
     Program(sentences)
@@ -117,6 +118,99 @@ Quotation contains arbitrary text (next characters between quote delimiters):
     consume characters until hitting EOF or any character..
     ..reserved by an entity.
 ```
-let next-value ():{
-    ; todo
+let next-value (reserved-chars):{
+    var value ""
+    until [ peekchar() == EOF || peekAnyChar(reserved-chars) ] {
+        value += getchar()
+    }
+    value
 }
+
+---
+
+[
+    'Program:[]
+    'ProgramSentence:[]
+    'ProgramWord:[
+        'SquareBracketsTerm
+        'SquareBracketsGroup
+        'ParenthesesBracketsGroup
+        'CurlyBracketsGroup
+        'Quotation
+        'Atom
+    ]
+    'Term:[]
+    'Word:[
+        'SquareBracketsGroup
+        'ParenthesesBracketsGroup
+        'CurlyBracketsGroup
+        'Quotation
+        'Atom
+    ]
+
+    'SquareBracketsTerm:[
+        'term-initiator:"[ "
+        'term-terminator:" ]"
+    ]
+    'SquareBracketsGroup:[
+        'term-group-initiator:"["
+        'term-group-continuator:", "
+        'term-group-terminator:"]"
+
+        'sentence-group-initiator:"["
+        'sentence-group-terminator:"]"
+        'sentence-group-indentation:"    "
+
+        'postfixes:[
+            'SquareBracketsGroup
+        ]
+    ]
+    'ParenthesesBracketsGroup:[
+        'term-group-initiator:"("
+        'term-group-continuator:", "
+        'term-group-terminator:")"
+
+        'postfixes:[
+            'ParenthesesBracketsGroup
+            'SquareBracketsGroup
+        ]
+    ]
+    'CurlyBracketsGroup:[
+        'term-initiator:"{"
+        'term-terminator:}"
+
+        'sentence-group-initiator:"{"
+        'sentence-group-terminator:"}"
+        'sentence-group-indentation:"    "
+
+        'postfixes:[
+            'ParenthesesBracketsGroup
+            'SquareBracketsGroup
+        ]
+    ]
+    'Quotation:[
+        'singleline-delimiters:"\""
+        'multiline-delimiters:"```"
+        'multiline-indentation:"    "
+    ]
+    'Atom:[
+        'postfixes:[
+            'ParenthesesBracketsGroup
+            'SquareBracketsGroup
+            'CurlyBracketsGroup -- for dollars cbg exclusively
+        ]
+    ]
+
+    'associables:[
+        'ParenthesesBracketsGroup
+        'CurlyBracketsGroup
+        'Quotation
+        'Atom
+    ]
+
+    'special-atoms:[
+        ":=" -- assignment symbol
+        "[:]" -- empty map literal
+        ".." -- range operator
+    ]
+]
