@@ -51,12 +51,9 @@ ATOM-QUOTE' -- when we fall-through Atom BUT it starts with the >>'<< character
 DOLLARS-CBG* -- when we fall-through Atom BUT it start with >>${<< characters
   -> should then be considered a special CurlyBracketsGroup
 
-(if a decimal number is met during consumeAtom 'look behind' => we create a number in the Atom rather than a Path.
-.. Also supports parentheses for repeating decimals)
-  -> `0.1(7)` would result in Atom<`0.1(7)`>
-  -> `1(7)` would result in PostfixParenthesesGroup<...>
-  -> `1.` malformed path
-  -> etc...
+decimal numbers results in Path, potentially PostfixPG off of Path (as in `0.1(2)`)
+  -> no particular handling in LV1, rather some kind of `fixNumerals()` in LV2..
+     ..to detect this pattern beforehand and turn the entity into a Numeral
 
 ATOM -- fall-through
 
