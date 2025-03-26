@@ -1,0 +1,47 @@
+
+var hash [1:2, 3:4]
+; var hash [
+    1:2
+    3:4
+]
+
+foreach keys(hash) {
+    let key $cur
+    let val hash[$cur]
+    let msg ```
+        Iteration #<$it>:
+        <$key> => <$val>
+        \
+    ```
+    print(msg)
+}
+
+let Map::foreach (map, do):{
+    foreach keys(map) {
+        let key $cur
+        let val map[$cur]
+        do(key, val)
+    }
+}
+
+{
+    let map [1:2, 3:4]
+    let do (k, v, _loop):{
+        let nth_it _loop.nth_it
+        let 1st_it _loop.1st_it
+        unless [ 1st_it ] {
+            println()
+        }
+        println("Iteration #<$nth_it>:")
+        println("<$k> => <$v>")
+    }
+    Map::foreach(map, do)
+}
+; -> prints ```
+    Iteration #1:
+    1 => 2
+    
+    Iteration #2:
+    3 => 4
+```
+
