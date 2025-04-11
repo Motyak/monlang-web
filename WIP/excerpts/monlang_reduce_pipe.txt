@@ -37,6 +37,20 @@ let pipe (fns...):{
     ret
 }
 
+OR
+
+let pipe (fns...):{
+    [ len(fns) >= 1 ] || die
+    let compose (fn1, fn2):{(x):{x |> fn1() |> fn2()}}
+    let ret {
+        let op compose
+        let init fns[#1]
+        let list fns[#2..-1]
+        reduce(op, init, list)
+    }
+    ret
+}
+
 let increment (x):{x + 1}
 let double (x):{x * 2}
 pipe(increment, double)
