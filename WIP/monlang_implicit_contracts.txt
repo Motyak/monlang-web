@@ -1,0 +1,35 @@
+
+
+```
+    implicit contract:
+    `obj` must be a struct_value_t,
+    which contains field `name`
+```
+let name (obj):{
+    obj.name
+}
+
+---
+
+```
+    implicit contract:
+    (`obj` is assumed by the compiler
+    to be a struct_value_t of struct Person)
+    Person must contain a field `name`
+```
+let name (obj):{
+    [ obj is Person ] || die
+    obj.name
+}
+
+---
+
+```
+    implicit contract:
+    `fn` must be a lambda
+```
+let calltwice (fn, args...):{
+    fn(args...)
+    fn(args...)
+}
+
