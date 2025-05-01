@@ -1,0 +1,63 @@
+
+
+- symbols are lexically scoped, therefore resolved statically (<> dynamically)
+  -> can trigger a semantic error (after parsing but before program execution)
+
+- type checking is performed at runtime using both implicit contracts
+  (e.g.: a subscript on a parameter means the arg should be either
+  a list_t or a map_t)
+  and explicit contracts (e.g.: guard instruction `[ somevar is SomeType ] || die`
+  in a lambda's body)
+  -> type errors are raised at runtime, making the program die
+
+- let statements
+  -> rhs is evaluated on use, not on declaration (<> var statements)
+  -> define a label to an lvalue, similar to a "memory location" alias
+  -> define a label to a value (we can't redefine a label within a same scope,
+      but we can shadow a label in an inner scope)
+
+- lazy pass by value / pass by reference
+  -> from a function's body perspective, parameters are
+     local variables
+    -> when a symbol is passed by reference,
+       an assignment in the function's body to the
+       associated parameter will mutate the original
+       variable
+    -> when a symbol is passed by value,
+       an assignment in the function's body to the
+       associated parameter will mutate a copy of the original
+       variable
+  -> arguments passed by value are evaluated only when first used
+     (if used at all)
+  -> arguments passed by reference are evaluated only if used
+     and re-evaluated every time they are used
+     (if it's of the kind a.b[c], otherwise if it's a simple
+      variable name then we don't need to re-evaluate its memory location)
+
+- operators are functions (first-class)
+
+- functions are named lambdas
+
+- lambdas can be closures (capturing variables in their own environment)
+
+- lambdas support variadic arguments (meaning some will accept an arbitrary
+  number of arguments, starting from a positional argument)
+
+- list/map auto-vivification
+  -> ability to use not yet created subscript as lvalue
+    -> ..which is the default, but there is also a syntax
+       to trigger an error if element at index/key is missing
+       (Subscript suffix)
+
+- overridable built-in functions (C++ impl)
+  -> operators, libc function wrappers (print, sleep, ..)
+  -> by linking custom dynamic library
+  -> if no library impl is linked, then
+     will fallback on default implementations
+     that are statically linked !
+
+  
+  
+  
+  
+
