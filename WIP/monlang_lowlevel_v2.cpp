@@ -1,32 +1,35 @@
 
 /*
-object_t
+value_t
   -> either a :
-    -> prim_object_t*
-    -> type_object_t*
-    -> struct_object_t*
-    -> enum_object_t*
+    -> prim_value_t*
+    -> type_value_t*
+    -> struct_value_t*
+    -> enum_value_t*
+    nil value is represented as a nullptr (whatever variant)
 
-prim_object_t
+prim_value_t
   -> Byte => uint8_t, Bool => bool,
      Int => int64_t, Float => double,
      Str => std::string,
-     List => std::vector<object_t>,
-     Map => std::map<object_t, object_t>
+     List => std::vector<value_t>,
+     Map => std::map<value_t, value_t>,
+     Lambda => std::function<value_t()>
+       -> captures both the Environment AND the list of parameters name
 
-type_object_t
+type_value_t
   -> type_identifier (name)
-  -> an object_t (value)
+  -> a value_t (value)
   
-struct_object_t
+struct_value_t
   -> a type_identifier (name)
   -> a vector of pairs, associating a field_identifier (name)
-     to an object_t (value)
+     to a value_t (value)
   
-enum_object_t
+enum_value_t
   -> a type_identifier (name)
   -> an enumerate identifier (name)
-  -> an enumerate value (object_t)
+  -> an enumerate value (value_t)
 */
 
 #include <variant>
@@ -34,18 +37,19 @@ enum_object_t
 #include <string>
 #include <vector>
 #include <map>
+#include <functional>
 
-struct prim_object_t;
-struct type_object_t;
-struct struct_object_t;
-struct enum_object_t;
+struct prim_value_t;
+struct type_value_t;
+struct struct_value_t;
+struct enum_value_t;
 
-using object_t = std::variant<
-    prim_object_t*, // primitive
+using value_t = std::variant<
+    prim_value_t*, // primitive
     /* user-defined */
-    type_object_t*,
-    struct_object_t*,
-    enum_object_t*
+    type_value_t*,
+    struct_value_t*,
+    enum_value_t*
 >;
 
 using Byte = uint8_t;
@@ -53,10 +57,11 @@ using Bool = bool;
 using Int = int64_t;
 using Float = double;
 using Str = std::string;
-using List = std::vector<object_t>;
-using Map = std::map<object_t, object_t>;
+using List = std::vector<value_t>;
+using Map = std::map<value_t, value_t>;
+using Lambda = std::function<value_t()>;
 
-struct prim_object_t {
+struct prim_value_t {
     using Variant = std::variant<
         Byte,
         Bool,
@@ -64,20 +69,22 @@ struct prim_object_t {
         Float,
         Str,
         List,
-        Map
+        Map,
+        Lambda
     >;
     Variant variant;
 };
 
-Byte asByte(prim_object_t obj) { return std::get<Byte>(obj.variant); }
-Bool asBool(prim_object_t obj) { return std::get<Bool>(obj.variant); }
-Int asInt(prim_object_t obj) { return std::get<Int>(obj.variant); }
-Float asFloat(prim_object_t obj) { return std::get<Float>(obj.variant); }
-Str asStr(prim_object_t obj) { return std::get<Str>(obj.variant); }
-List asList(prim_object_t obj) { return std::get<List>(obj.variant); }
-Map asMap(prim_object_t obj) { return std::get<Map>(obj.variant); }
+Byte asByte(prim_value_t obj) { return std::get<Byte>(obj.variant); }
+Bool asBool(prim_value_t obj) { return std::get<Bool>(obj.variant); }
+Int asInt(prim_value_t obj) { return std::get<Int>(obj.variant); }
+Float asFloat(prim_value_t obj) { return std::get<Float>(obj.variant); }
+Str asStr(prim_value_t obj) { return std::get<Str>(obj.variant); }
+List asList(prim_value_t obj) { return std::get<List>(obj.variant); }
+Map asMap(prim_value_t obj) { return std::get<Map>(obj.variant); }
+Lambda asLambda(prim_value_t obj) { return std::get<Lambda>(obj.variant); }
 
-#ifdef PRIM_OBJECT_T_TEST
+#ifdef PRIM_VALUE_T_TEST
 #include <iostream>
 
 template <typename T>
@@ -100,7 +107,7 @@ void println<bool>(bool val) {
 }
 
 template<>
-void println<std::vector<object_t>>(std::vector<object_t> val) {
+void println<std::vector<value_t>>(std::vector<value_t> val) {
     std::cout << "{\n";
     for (auto e: val) {
         std::cout << "    ";
@@ -113,7 +120,7 @@ void println<std::vector<object_t>>(std::vector<object_t> val) {
 }
 
 template<>
-void println<std::map<object_t, object_t>>(std::map<object_t, object_t> val) {
+void println<std::map<value_t, value_t>>(std::map<value_t, value_t> val) {
     std::cout << "{\n";
     for (auto [k, v]: val) {
         std::cout << "    ";
@@ -130,10 +137,15 @@ void println<std::map<object_t, object_t>>(std::map<object_t, object_t> val) {
     std::cout << "\n}\n";
 }
 
+template<>
+void println<std::function<value_t()>>(std::function<value_t()> val) {
+    std::cout << "<lambda>\n";
+}
+
 int main()
 {
     {
-        std::cout << "sizeof object_t : " << sizeof(object_t) << "\n";
+        std::cout << "sizeof value_t : " << sizeof(value_t) << "\n";
         std::cout << "sizeof Byte : " << sizeof(Byte) << "\n";
         std::cout << "sizeof Bool : " << sizeof(Bool) << "\n";
         std::cout << "sizeof Int : " << sizeof(Int) << "\n";
@@ -141,69 +153,104 @@ int main()
         std::cout << "sizeof Str : " << sizeof(Str) << "\n";
         std::cout << "sizeof List : " << sizeof(List) << "\n";
         std::cout << "sizeof Map : " << sizeof(Map) << "\n";
-        std::cout << "sizeof prim_object_t : " << sizeof(prim_object_t) << "\n";
+        std::cout << "sizeof Lambda : " << sizeof(Lambda) << "\n";
+        std::cout << "sizeof prim_value_t : " << sizeof(prim_value_t) << "\n";
         std::cout << "\n";
     }
     
     {
-        auto obj = prim_object_t(Byte(91));
+        auto obj = prim_value_t(Byte(91));
         println(asByte(obj));
     }
     
     {
-        auto obj = prim_object_t(Bool(true));
+        auto obj = prim_value_t(Bool(true));
         println(asBool(obj));
     }
     
     {
-        auto obj = prim_object_t(Int(1997));
+        auto obj = prim_value_t(Int(1997));
         println(asInt(obj));
     }
     
     {
-        auto obj = prim_object_t(Float(3.14));
+        auto obj = prim_value_t(Float(3.14));
         println(asFloat(obj));
     }
     
     {
-        auto obj = prim_object_t(Str("hello"));
+        auto obj = prim_value_t(Str("hello"));
         println(asStr(obj));
     }
     
     {
-        auto obj = new prim_object_t(Byte(91));
-        std::vector<object_t> list = {obj};
-        auto list_obj = prim_object_t(List(list));
+        auto obj = new prim_value_t(Byte(91));
+        std::vector<value_t> list = {obj};
+        auto list_obj = prim_value_t(List(list));
         println(asList(list_obj));
     }
     
     {
-        auto obj_k = new prim_object_t(Str("hello"));
-        auto obj_v = new prim_object_t(Str("world"));
-        std::map<object_t, object_t> map = {{obj_k, obj_v}};
-        auto obj = prim_object_t(Map(map));
+        auto obj_k = new prim_value_t(Str("hello"));
+        auto obj_v = new prim_value_t(Str("world"));
+        std::map<value_t, value_t> map = {{obj_k, obj_v}};
+        auto obj = prim_value_t(Map(map));
         println(asMap(obj));
     }
+    
+    {
+        auto some_obj = new prim_value_t(Str("test"));
+        auto lambda = [&some_obj](){return some_obj;};
+        auto obj = prim_value_t(Lambda(lambda));
+        println(asLambda(obj));
+    }
 }
-#endif // PRIM_OBJECT_T_TEST
 
-struct type_object_t {
+/*
+sizeof value_t : 16
+sizeof Byte : 1
+sizeof Bool : 1
+sizeof Int : 8
+sizeof Float : 8
+sizeof Str : 32
+sizeof List : 24
+sizeof Map : 48
+sizeof Lambda : 32
+sizeof prim_value_t : 56
+
+0b01011011
+true
+1997
+3.14
+hello
+{
+    0x5f2e183b36c0
+}
+{
+    0x5f2e183b3780 => 0x5f2e183b37c0
+}
+<lambda>
+*/
+
+#endif // PRIM_VALUE_T_TEST
+
+struct type_value_t {
     std::string_view type;
-    object_t value;
+    value_t value;
 };
 
-struct struct_object_t {
+struct struct_value_t {
     std::string_view
     type;
     
-    std::vector<std::pair<std::string_view, object_t>>
+    std::vector<std::pair<std::string_view, value_t>>
     fields;
 };
 
-struct enum_object_t {
+struct enum_value_t {
     std::string_view type;
     std::string_view enumerate_name;
-    object_t enumerate_value;
+    value_t enumerate_value;
 };
 
 #ifdef MAIN
@@ -211,36 +258,36 @@ struct enum_object_t {
 int main()
 {
     {
-        std::cout << "sizeof object_t : " << sizeof(object_t) << "\n";
-        std::cout << "sizeof prim_object_t : " << sizeof(prim_object_t) << "\n";
-        std::cout << "sizeof type_object_t : " << sizeof(type_object_t) << "\n";
-        std::cout << "sizeof struct_object_t : " << sizeof(struct_object_t) << "\n";
-        std::cout << "sizeof enum_object_t : " << sizeof(enum_object_t) << "\n";
+        std::cout << "sizeof value_t : " << sizeof(value_t) << "\n";
+        std::cout << "sizeof prim_value_t : " << sizeof(prim_value_t) << "\n";
+        std::cout << "sizeof type_value_t : " << sizeof(type_value_t) << "\n";
+        std::cout << "sizeof struct_value_t : " << sizeof(struct_value_t) << "\n";
+        std::cout << "sizeof enum_value_t : " << sizeof(enum_value_t) << "\n";
         std::cout << "\n";
     }
     
     {
-        auto john_str = prim_object_t(Str("John"));
-        auto john_str_obj = object_t(&john_str);
-        auto john_name = type_object_t("Name", john_str_obj);
-        auto john_name_obj = object_t(&john_name);
+        auto john_str = prim_value_t(Str("John"));
+        auto john_str_obj = value_t(&john_str);
+        auto john_name = type_value_t("Name", john_str_obj);
+        auto john_name_obj = value_t(&john_name);
         
-        auto someage_int = prim_object_t(Int(28));
-        auto someage_int_obj = object_t(&someage_int);
-        auto someage_age = type_object_t("Age", someage_int_obj);
-        auto someage_age_obj = object_t(&someage_age);
+        auto someage_int = prim_value_t(Int(28));
+        auto someage_int_obj = value_t(&someage_int);
+        auto someage_age = type_value_t("Age", someage_int_obj);
+        auto someage_age_obj = value_t(&someage_age);
         
-        auto blue_str = prim_object_t(Str("blue"));
-        auto blue_str_obj = object_t(&blue_str);
-        auto blue_color = type_object_t("Color", blue_str_obj);
-        auto blue_color_obj = object_t(&blue_color);
+        auto blue_str = prim_value_t(Str("blue"));
+        auto blue_str_obj = value_t(&blue_str);
+        auto blue_color = type_value_t("Color", blue_str_obj);
+        auto blue_color_obj = value_t(&blue_color);
         
-        auto person = struct_object_t("Person", {
+        auto person = struct_value_t("Person", {
             {"name", john_name_obj}, 
             {"age", someage_age_obj},
             {"fav_color", blue_color_obj},
         });
-        auto person_obj = object_t(&person);
+        auto person_obj = value_t(&person);
         
         std::cout << (
             sizeof(person_obj)
@@ -262,15 +309,15 @@ int main()
         ) << "\n";
     }
 }
-#endif // MAIN
 
 /*
-sizeof object_t : 16
-sizeof prim_object_t : 56
-sizeof type_object_t : 32
-sizeof struct_object_t : 40
-sizeof enum_object_t : 48
+sizeof value_t : 16
+sizeof prim_value_t : 56
+sizeof type_value_t : 32
+sizeof struct_value_t : 40
+sizeof enum_value_t : 48
 
 416
 */
 
+#endif // MAIN
