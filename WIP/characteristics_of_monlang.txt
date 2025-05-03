@@ -10,6 +10,18 @@
   in a lambda's body)
   -> type errors are raised at runtime, making the program die
 
+- blocks are expressions
+  -> not only can you create blocks to create scopes..
+     ..but you can also use a block expression anywhere..
+     ..a value can be provided
+  -> those help with name collisions and are alternatives to functions..
+     ..to avoid creating accidental/wrong abstractions
+  -> you can early return from a block
+     (use the `return` keyword, `break` would affect the closest enclosing loop)
+     (if you want to return the parent block, instead use a one iteration do..while
+     that will give you the scope property while allowing you to return from the
+     parent block expression or lambda)
+
 - let statements
   -> rhs is evaluated on use, not on declaration (<> var statements)
   -> define a label to an lvalue, similar to a "memory location" alias
