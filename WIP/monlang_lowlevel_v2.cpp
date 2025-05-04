@@ -14,7 +14,7 @@ prim_value_t
      Str => std::string,
      List => std::vector<value_t>,
      Map => std::map<value_t, value_t>,
-     Lambda => std::function<value_t()>
+     Lambda => std::function<value_t(const Environment&)>
        -> captures both the Environment AND the list of parameters name
 
 type_value_t
@@ -61,7 +61,7 @@ using Float = double;
 using Str = std::string;
 using List = std::vector<value_t>;
 using Map = std::map<value_t, value_t>;
-using Lambda = std::function<value_t(const Environment*)>;
+using Lambda = std::function<value_t(const Environment&)>;
 
 struct prim_value_t {
     using Variant = std::variant<
