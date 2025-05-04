@@ -2,6 +2,9 @@
 
 - symbols are lexically scoped, therefore resolved statically (<> dynamically)
   -> can trigger a semantic error (after parsing but before program execution)
+  
+- functions arity is checked during static analysis
+  -> can trigger a semantic error as well
 
 - type checking is performed at runtime using both implicit contracts
   (e.g.: a subscript on a parameter means the arg should be either
@@ -72,4 +75,3 @@
   
   
   
-
