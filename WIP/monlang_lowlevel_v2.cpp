@@ -39,6 +39,8 @@ enum_value_t
 #include <map>
 #include <functional>
 
+struct Environment;
+
 struct prim_value_t;
 struct type_value_t;
 struct struct_value_t;
@@ -59,7 +61,7 @@ using Float = double;
 using Str = std::string;
 using List = std::vector<value_t>;
 using Map = std::map<value_t, value_t>;
-using Lambda = std::function<value_t()>;
+using Lambda = std::function<value_t(const Environment*)>;
 
 struct prim_value_t {
     using Variant = std::variant<
