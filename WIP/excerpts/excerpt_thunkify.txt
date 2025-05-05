@@ -1,0 +1,21 @@
+
+var a 0
+
+var thunk {
+    let val {
+        ...
+        a -- not evaluated
+    }
+    thunkify(a -- still not evaluated)
+}
+
+a := 91
+
+thunk() -- 91, not 0
+
+
+
+
+
+
+
