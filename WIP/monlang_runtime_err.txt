@@ -1,0 +1,18 @@
+- Runtime error: Assertion `<cond>` unmet
+  -> [ <cond> ] || die
+
+- Runtime error: Invariant `<invariant>` violated
+  -> [ <invariant> ]
+
+- Runtime error: Incompatible type `<type>`
+  -> 1 + ():{}
+
+- Runtime error: Subscript argument `#1` out of bounds
+  -> list[#i]
+  -> map[key]
+
+- Runtime error: Unknown field `name` accessed
+  -> someobj.name
+
+
+
