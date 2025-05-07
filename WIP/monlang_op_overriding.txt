@@ -1,0 +1,23 @@
+-(-1 - 1, -)
+  -> runtime error, can't cast Lambda to Int
+
+---
+
+```
+    overriding the builtin `*` operator..
+    ..to take advantage of lazy evaluation
+```
+let * (lhs, rhs, varargs...):{
+    [ lhs <> 0 ] || return 0
+    var res lhs
+    let it ${Stream(rhs, varargs...)}
+    do {
+        let cur ${next(it)}
+        [ cur <> 0 ] || return 0
+        ; refers to the builtin operator
+        res *= cur
+    }
+    until [ end?(it) ]
+    res
+}
+
