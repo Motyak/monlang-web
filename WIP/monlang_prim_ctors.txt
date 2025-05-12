@@ -1,0 +1,40 @@
+
+prim_ctors{.h,.cpp}
+
+Int(Bool)
+Int(Byte)
+Int(Int)
+Int(Float) -- loss
+
+Byte(Bool)
+Byte(Byte)
+Byte(Int) -- potential loss
+
+Bool(Bool)
+Bool(Byte) -- potential loss
+Bool(Int) -- potential loss
+
+---
+
+Float(Bool)
+Float(Byte)
+Float(Int) -- potential loss
+Float(Float)
+
+---
+
+Str(x) => will stringify the value
+          (as in builtin::print)
+          
+---
+
+List(x, ...)
+Map([k, v], ...)
+
+---
+
+Lambda(Lambda)
+
+
+
+
