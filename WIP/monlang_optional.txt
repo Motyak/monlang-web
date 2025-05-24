@@ -1,0 +1,57 @@
+
+
+
+'===Optional==========================
+
+let Optional (some?, val):{
+    [ some? is Bool ] || die
+    
+    let some? ${some?}
+    let val ${val}
+    
+    let none? ():{
+        not(some?)
+    }
+    
+    let some ():{
+        [ some? ] || die
+        val
+    }
+    
+    '----------------
+    
+    let dispatcher (msg_id):{
+        if [ msg_id == 0 ] {
+            return none?
+        }
+        elsif [ msg_id == 1 ] {
+            return some
+        }
+        else {
+            die
+        }
+    }
+    
+    dispatcher
+}
+
+let none? (opt):{opt(0)()}
+let some (opt):{opt(1)()}
+
+let Optional() Optional($false, _)
+let Optional(x) Optional($true, x)
+
+'===main==============================
+
+let Pair?() Optional()
+let Pair?(left, right) Optional(Pair(left, right))
+
+let List Pair
+
+var empty-list $nil
+var one-element-list List(13, Pair?())
+var two-element-list List(13, Pair?(37, Pair?()))
+
+
+
+
