@@ -6,9 +6,6 @@
 let Optional (some?, val):{
     [ some? is Bool ] || die
     
-    let some? ${some?}
-    let val ${val}
-    
     let none? ():{
         not(some?)
     }
