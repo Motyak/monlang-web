@@ -1,0 +1,132 @@
+
+monlang alpha
+  -> this version of the language heavily relies
+     on lazy evaluation, and requires the
+     toggle feature `CAST_NIL_TO_BOOL`
+     in order to use && and || to build
+     tern and !tern functions in place
+     of if statement.
+     Uses recursivity to express loops
+     (as in Scheme).
+
+--- LV1 --------------------------------
+
+Atom (including `:=` special atom)
+Quotation (singleline, multiline and including atom quote)
+ParenthesesGroup
+CurlyBracketsGroup (oneline, multiline but excluding dollars block)
+PostfixParenthesesGroup
+Association
+
+--- LV2 --------------------------------
+
+===STMT===
+var stmt
+assignment
+accumulation
+block (compound statement)
+  -> (as an expr stmt :: block expr)
+expr stmt (fall-through)
+
+===EXPR===
+operation
+function call
+lambda
+block expression
+numeral
+str literal
+special symbol
+symbol
+
+===OPTOR===
+<all operators from precedence table>
+
+--- interpreter/environment ------------------
+
+===INTERPRETER===
+`_` disposable name
++, && and || built-in functions
+exit and print built-in functions
+Bool, Byte, Float, Int, Str primitive constructors
+$true, $false, $nil special values
+toggle feature CAST_NIL_TO_BOOL
+
+===ENV===
+
+These definitions may come in handy:
+
+--- conditionals
+
+var tern (cond, if_true, if_false):{
+    var res _
+    cond && {res := if_true}
+    cond || {res := if_false}
+    res
+}
+
+var !tern (cond, if_false, if_true):{
+    tern(cond, if_true, if_false)
+}
+
+var not (bool):{
+    tern(bool, $false, $true)
+}
+
+--- ADDitional operators (get it?)
+
+var * {
+    var * _
+
+    * := (lhs, rhs):{
+        !tern(rhs, 0, {
+            !tern(rhs + -1, lhs, {
+                lhs + *(lhs, rhs + -1)
+            })
+        })
+    }
+
+    *
+}
+
+var - (n):{
+    n + -2 * n
+}
+
+--- loops
+
+var while {
+    var while _
+
+    while := (cond, do):{
+        cond() && {
+            do()
+            while(cond, do)
+        }
+    }
+
+    while
+}
+
+var until (cond, do):{
+    while(not(cond), do)
+}
+
+var do_while (do, cond):{
+    do()
+    while(cond, do)
+}
+
+var do_until (do, cond):{
+    do()
+    until(cond, do)
+}
+
+var n_times (n, do):{
+    var i 0
+    while(():{i + -(n)}, ():{
+        i += 1
+        do()
+    })
+}
+
+
