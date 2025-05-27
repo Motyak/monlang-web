@@ -1,0 +1,77 @@
+Conventions about blocks vs block expressions:
+
+it should be clear from the context whether
+a syntax block is a compound statement
+or a block expression.
+
+The most straight-forward way of doing so
+is to bind it to a name, meaning its value
+is going to get used at some point for sure.
+
+--- return block expression from block/blockExpr/lambda :
+
+We bind the block expression to a name and return
+the name instead.
+
+we should NEVER have a trailing block/blockExpr/lambda
+within a block because it is very confusing.
+
+--- top-level blocks cases :
+
+But if it's merely used to be printed to
+the console (when running in interactive mode)
+it seems a bit excessive, therefore in this case
+it would make more sense to prefix the block
+with `' + ` as such:
+```
+   ' + {
+       <a very long block>
+       
+       <ends with an expression stmt,
+        which expression value will get
+        returned from the block>
+   }
+```
+
+That way, we don't need to put a trailing null statement
+to differentiate a compound statement from a block expr.
+
+========================================================
+
+Conventions about function calls vs procedure calls:
+
+it should be clear whether
+a syntax FunctionCall is explicitly returning a value
+(meaning it is a function) or if it is returning an
+implicit $nil value (meaning it is a procedure)
+
+When a lambda's body trailing statement is a procedure call,
+or any expression which we don't care about the value,
+we add a null statement `;` after it, as in:
+```
+    var a ():{
+        <do stuff>
+        
+        b()
+        ;
+    }
+```
+
+--- Empty lambda's body:
+
+var fn (_):{}
+
+var fn (x):{
+    ; todo
+}
+
+
+
+
+
+
+
+
+
+
+
