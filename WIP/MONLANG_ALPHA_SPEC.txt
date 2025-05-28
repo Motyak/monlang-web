@@ -108,15 +108,15 @@ var while {
 }
 
 var until (cond, do):{
-    while(not(cond), do)
+    while(():{not(cond())}, do)
 }
 
-var do_while (do, cond):{
+var do_while (cond, do):{
     do()
     while(cond, do)
 }
 
-var do_until (do, cond):{
+var do_until (cond, do):{
     do()
     until(cond, do)
 }
