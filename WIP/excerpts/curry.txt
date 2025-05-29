@@ -1,0 +1,21 @@
+let curry (fn):{
+    var curried _
+    curried := (args...):{
+        if [ len($self) >= len(fn) ] {
+            return fn(args...)
+        }
+        (args2...):{curried(args..., args2...)}
+    }
+    curried
+}
+
+let add (a, b, c):{
+    a + b + c
+}
+
+let curried_add curry(add)
+curried_add(1)(2)(3)
+curried_add(1, 2)(3)
+curried_add(1)(2, 3)
+curried_add(1, 2, 3)
+
