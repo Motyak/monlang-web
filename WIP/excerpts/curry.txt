@@ -1,7 +1,7 @@
 let curry (fn):{
     var curried _
     curried := (args...):{
-        if [ len($self) >= len(fn) ] {
+        if [ $#varargs >= len(fn) ] {
             return fn(args...)
         }
         (args2...):{curried(args..., args2...)}
