@@ -1,4 +1,104 @@
 
+In an attempt to characterize monlang,
+i will start by listing the top discriminants of the language compared to others:
+
+1) monlang functions use normal-order evaluation (<> applicative-order evaluation)
+  -> as a consequence, infix operators can be transformed into function calls
+     without losing any of their property (such as short-circuiting for && and ||)
+  -> the only language i know with this characteristic is Haskell,
+     where the functions implement the "call by need" evaluation strategy
+
+2) operators are functions
+  -> normally, operators are evaluated in a different manner than
+     function, because of their unique property such as
+     short-cirtcuiting
+
+3) functions are lexically-scoped named lambdas/closures
+  -> as a consequence, functions are first-class
+  -> normally, functions are defined at the top-level
+     of the program, and therefore we cannot define
+     a function within a function (to reduce its scope)
+    -> In fact, there is a GNU extension to do just that in C/C++
+  -> this is greatly inspired from Scheme
+
+4) there are very few restrictions on symbol names (also called "identifiers" in
+   other languages). The only forbidden characters are the ones that may conflict with
+   the outer syntax rules, such as the balancing characters '(' and ')', '[' and ']',
+   '{' and '}' or quotes, as well as separators ',' or '.' or any whitespace.
+   In fact, there are no explicit rules for names, they just are the "atoms"
+   of the language, defined as "not any of the previously defined entities".
+   So you cannot relax its implicit rules more than that.
+  -> this is also inspired from Scheme
+   
+At this point, the language has a lot of similarities with functional programming
+languages.
+But monlang is in fact a procedural, structured programming language.
+Similar to some well-known languages, the language doesn't enforce a particular paradigm,
+so you can do functional thinking as well as object-oriented thinking.
+  -> you can do OOP in C or Scheme ...
+  -> you can do functional in C++ ...
+
+What makes monlang a structured imperative language:
+- There are both statements and expressions (through you can
+  get away with only expressions if you want to, as in Scheme)
+
+- There are variables (name bound to a memory location, 
+  rather than a fixed value)
+
+- There are constructs for conditionals and loops
+  (same, you can simulate these constructs with functions)
+
+- There are early returns (from block/function or loop)
+  -> the famous keywords "return", "continue", "break"
+
+As a programmer, I was greatly influenced by C++ (which in turn was and still
+is influenced by C).
+Here are features the language share with C/C++:
+- Blocks
+  -> In C/C++, blocks are compound statements.
+     In monlang, they can be used as expressions as well
+    -> In fact, there is a GNU extension for adding block expression in C/C++
+
+- Pass by reference
+  -> In C/C++, you have pointers, and therefore you can pass the address
+     of a variable instead of its value, so that you can track or modify
+     the variable value in the function's body.
+     In monlang, there are no pointers or reference, but you can
+     prefix a variable with an '&' to pass the argument as reference
+
+As well as others such as:
+- variadic arguments
+- struct definition as top-level statement
+
+monlang shares the same infix operators as C++,
+and the same precedence table.
+We only added a few like 'in', '!in', ..
+
+Each monlang primitive value type can be mapped to a
+C++ primitive type, with the exception of
+List (std::vector) and Map (std::map).
+
+---
+
+- Python, Perl, JavaScript, Groovy have no facilities for struct definition.
+  I want to be able to first define a vocabulary for my program
+  BEFORE writing any logic.
+    -> struct definition that will help me think with
+       a little bit more abstract things (but not too much).
+    -> structs are DATA not OBJECTS
+  -> no OUT parameter either
+
+- Give tools to avoid superfluous subroutine definitions that would lead to wrong abstractions
+  (e.g.: private method pattern, DRY pattern
+  -> take advantage of block expressions
+  -> take advantage of scoping rules
+  
+- Give tools to present the domain vocabulary (introduced as symbols)
+  -> make use of intermediate labels
+  -> encode local processes as local named lambdas
+
+
+---------------
 
 - symbols are lexically scoped, therefore resolved statically (<> dynamically)
   -> can trigger a semantic error (after parsing but before program execution)
