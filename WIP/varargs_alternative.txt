@@ -1,0 +1,16 @@
+
+var argcount {
+    let argcount-0 ():{
+        0
+    }
+
+    let argcount() argcount-0()
+
+    var argcount _
+    argcount := (x, xs...):{
+        1 + argcount(xs...)
+    }
+}
+
+
+
