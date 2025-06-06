@@ -55,6 +55,13 @@ toggle feature CAST_NIL_TO_BOOL
 
 These definitions may come in handy:
 
+--- exceptions
+
+var die (msg):{
+    print(msg)
+    exit(1)
+}
+
 --- conditionals
 
 var tern (cond, if_true, if_false):{
