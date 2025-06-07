@@ -1,0 +1,43 @@
+
+[1..10] |> map((x):{x * 2})
+
+range(1, 10) |> map((x):{x * 2})
+
+---
+
+var seq {
+    let sumOfDigits (n):{
+        var res Str(n)
+        res := res |> map((c):{parseInt(c)})
+        res := res |> reduce(+, 0)
+        res
+    }
+
+    let pred (n):{
+        n % 10 != 0 && sumOfDigits(n) < 10
+    }
+
+    var seq range(1, 90)
+    seq := seq |> filter(pred)
+    seq := seq |> map((n):{parseInt('9 * 6) * n // 91})
+    seq
+}
+
+var seq2 {
+    let sumOfDigits (n):{
+        var res Str(n)
+        res := res |> map((c):{parseInt(c)})
+        res := res |> reduce(+, 0)
+        res
+    }
+    
+    let pred (n):{
+        n % 10 != 0 && sumOfDigits(n) < 10
+    }
+
+    var seq range(1, 45)
+    seq := seq |> map((n):{tern(pred(n), n, 91 - n)})
+    seq := seq |> map((n):{parseInt('9 * 6) * n // 91})
+    seq
+}
+
