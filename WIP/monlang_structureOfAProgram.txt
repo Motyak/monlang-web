@@ -1,0 +1,33 @@
+Structure of an exhaustive Monlang program:
+
+/* c preprocessor directives (pragma once, include) */
+
+package global
+
+/* top-level statements (user type definitions) */
+
+/* symbol definitions (functions, variables, etc..) */
+
+package main
+
+/* actual program logic */
+
+---
+
+Structure of a simple Monlang program:
+
+/* standalone file means no need for `#pragma once` */
+
+/* no dependencies means no `#include` */
+
+// the `package global` line is optional (its the default package)
+
+// when we elid `package main` line, it stays in package global,
+// which means any other file that #include this file will execute
+// this file's logic code before its own
+
+// here we don't care because it's a standalone file,
+// so it's not going to be included anywhere
+
+/* program definitions and logic */
+
