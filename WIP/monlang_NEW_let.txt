@@ -1,0 +1,53 @@
+
+restreindre let aux lvalue et au function binding ?
+
+
+let: to define an alias
+
+variable alias:
+let a b
+let a b[c]
+let a b.c
+let a b.c[d]!
+...
+
+function alias:
+let a() b()
+let fds(x) fds(1, x)
+...
+
+---
+
+we don't actually need let to name function
+call arguments, here is why :
+
+var res {
+    var a x -- x gets evaluated
+    var b y -- ..
+    fncall(a, b)
+}
+
+var res {
+    var a ():{x} -- x does't get evaluated
+    var b ():{y} -- ..
+    fncall(a(), b()) -- pulling gets evaluated later
+}
+
+var delay (x):{
+    var delayed ():{x}
+    delayed
+}
+
+var pull (delayed):{
+    delayed()
+}
+
+var res {
+    var a delay(x) -- x does't get evaluated
+    var b delay(y) -- ..
+    fncall(pull(a), pull(b)) -- pulling gets evaluated later
+}
+
+var res fncall(a -- some stuff, b -- this as well)
+
+
