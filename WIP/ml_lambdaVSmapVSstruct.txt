@@ -1,0 +1,18 @@
+
+lambda vs map vs struct
+
+lambda
+  -> you can't modify "field" value
+  -> you can't check if a "field" exists
+  -> you can't add new fields
+  
+struct
+  -> you can modify field value
+  -> you can't check if a field exists
+  -> you can't add new fields
+
+map
+  -> you can modify "field" value
+  -> you can check if a "field" exists
+  -> you can add new fields
+

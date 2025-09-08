@@ -1,0 +1,20 @@
+
+Add `is` and `!is` operators for type introspection
+  -> parameter type checking (especially for user-defined types),
+     allow dispatch on type,
+     flatten list,
+     ...
+
+$type(x)
+  -> can as well be used as map key (for visitors, ..)
+
+var type! (val, type):{
+    $type(val) == type || {
+        var msg "not a " + type
+        msg += ": `" + val + "`"
+        die(msg)
+    }
+}
+
+type!(person, 'Person)
+
