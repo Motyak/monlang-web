@@ -1,0 +1,30 @@
+_ is a disposable name
+  -> (_, _):{}
+    -> to discard arguments
+  -> var myvar _
+    -> forward declaration
+  -> _ := somefn()
+    -> when you only want a function's side effect
+       (assignment as a trailing stmt in a block
+        makes the block eval to $nil)
+    -> cond && {_ := fn()}
+      -> we want to conditionally execute
+         fn() for its side-effect, but fn
+         return value is not convertible to
+         a Bool)
+    -> allows to trigger recursive tail call
+       elimination (used in loops)
+
+; is the null statement
+  -> at the end of a block, after a tern(), &&() or ||()
+     to discard the bool result
+  -> for empty multiline block
+
+-- is for commenting code
+  -> can also be used for documenting code
+
+A single line with only `_` or `--` is never a good idea,
+  we should use `;` instead.
+  
+
+
